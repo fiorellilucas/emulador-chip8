@@ -11,7 +11,7 @@ uint16_t opcode_data;
 int main() {
     using namespace std;
 
-    filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/games/Cave.ch8");
+    filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/games/Pong.ch8");
     ifstream file(game_path, ios::binary);
 
     uint16_t game_size = filesystem::file_size(game_path);
@@ -23,9 +23,9 @@ int main() {
             file.read(reinterpret_cast<char*>(&memory[0x200 + i]), 1);
             //cout << hex << showbase << memory[0x200 + i] << "\n";
         }
-
     }
     
+    uint16_t subroutine_call = {};
     while (true) {
         opcode = (memory[pc] << 8 | memory[pc + 1]);
         bool increment_pc = true;
@@ -36,11 +36,22 @@ int main() {
                 pc = opcode_data;
                 increment_pc = false;
                 break;
-            default:
-                cout << "opcode " << hex << showbase << opcode << " unknown\n";
+            case 0x2000:
+                opcode_data = (opcode & 0x0FFF);
+                subroutine_call = pc;
+                pc = opcode_data;
+                increment_pc = false;     
                 break;
+            default:
+                switch (opcode) {
+                    case 0xEE:
+                        pc = subroutine_call;
+                        break;
+                    default:
+                        cout << hex << showbase << "opcode " << opcode << " unknown\n";
+                        break;
+                    }
         }
-        
         if (increment_pc) {
             pc += 2;
         }
