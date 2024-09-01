@@ -31,7 +31,7 @@ int main() {
 
         for (uint16_t i = 0; i < game_size; i++) {
             file.read(reinterpret_cast<char*>(&memory[0x200 + i]), 1);
-            //cout << hex << showbase << memory[0x200 + i] << "\n";
+            //cout << std::hex << std::showbase << memory[0x200 + i] << "\n";
         }
     }
 
@@ -196,7 +196,7 @@ int main() {
         case 0xC000: {
             std::random_device rd;
             std::mt19937 gen(rd());
-            std::uniform_int_distribution<uint8_t> random_number(0, 255);
+            std::uniform_int_distribution<uint16_t> random_number(0, 255);
 
             uint16_t reg_num = (opcode_data & 0xF00) >> 8;
             uint8_t value = (opcode_data & 0xFF);
