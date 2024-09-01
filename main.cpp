@@ -163,6 +163,15 @@ int main() {
             break;
         }
 
+        case 0x9000: {
+            uint16_t reg_num_x = (opcode & 0xF00) >> 8;
+            uint16_t reg_num_y = (opcode & 0xF0) >> 4;
+            if (regs[reg_num_x] != regs[reg_num_y]) {
+                pc += 2;
+            }
+            break;
+        }
+
         default:
             switch (opcode) {
             case 0xEE:
