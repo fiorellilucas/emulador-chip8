@@ -18,7 +18,7 @@ uint16_t opcode_data;
 
 int main() {
 
-    std::filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/games/Landing.ch8");
+    std::filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/games/Soccer.ch8");
     std::ifstream file(game_path, std::ios::binary);
 
     uintmax_t game_size = std::filesystem::file_size(game_path);
@@ -32,7 +32,6 @@ int main() {
         }
     }
 
-    uint16_t subroutine_call = {};
     while (true) {
         opcode = (memory[pc] << 8 | memory[pc + 1]);
         bool increment_pc = true;
@@ -47,7 +46,10 @@ int main() {
 
         case 0x2000: {
             opcode_data = (opcode & 0x0FFF);
-            subroutine_call = pc;
+
+            sp = pc;
+            stack.push(sp);
+            
             pc = opcode_data;
             increment_pc = false;
             break;
@@ -95,7 +97,6 @@ int main() {
         }
 
         case 0x8000: {
-
             uint16_t reg_num_x = (opcode & 0xF00) >> 8;
             uint16_t reg_num_y = (opcode & 0xF0) >> 4;
 
@@ -182,7 +183,8 @@ int main() {
         default:
             switch (opcode) {
             case 0xEE:
-                pc = subroutine_call;
+                pc = stack.top();
+                stack.pop();
                 break;
             case 0xE0:
                 cout << "display clear\n";
