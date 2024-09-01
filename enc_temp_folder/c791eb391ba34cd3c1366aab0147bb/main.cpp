@@ -110,27 +110,13 @@ int main() {
                 break;
             }
             case 0x4: {
-                uint8_t previous_value = regs[reg_num_x];
                 regs[reg_num_x] += regs[reg_num_y];
                 // VF is set to 1 when there's an overflow, and to 0 when there is not.
-                if (previous_value > regs[reg_num_x]) {
-                    regs[0xF] = 1;
-                }
-                else {
-                    regs[0xF] = 0;
-                }
                 break;
             }
             case 0x5: {
-                uint8_t previous_value = regs[reg_num_x];
                 regs[reg_num_x] -= regs[reg_num_y];
                 // VF is set to 0 when there's an underflow, and 1 when there is not. (i.e. VF set to 1 if VX >= VY and 0 if not).
-                if (previous_value < regs[reg_num_x]) {
-                    regs[0xF] = 0;
-                }
-                else {
-                    regs[0xF] = 1;
-                }
                 break;
             }
             case 0x6: {
@@ -139,15 +125,8 @@ int main() {
                 break;
             }
             case 0x7: {
-                uint8_t previous_value = regs[reg_num_x];
-                regs[reg_num_x] = regs[reg_num_y] - regs[reg_num_x];
                 // VF is set to 0 when there's an underflow, and 1 when there is not. (i.e. VF set to 1 if VY >= VX).
-                if (previous_value < regs[reg_num_x]) {
-                    regs[0xF] = 0;
-                }
-                else {
-                    regs[0xF] = 1;
-                }
+                regs[reg_num_x] = regs[reg_num_y] - regs[reg_num_x];
                 break;
             }
             case 0xE: {
