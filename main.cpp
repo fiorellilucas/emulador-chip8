@@ -1,20 +1,27 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <stack>
+
+using std::cout;
 
 uint16_t memory[4096] = { 0 };
 uint16_t pc = 0x200;
+
 uint8_t regs[16] = { 0 };
+
+std::stack<uint16_t> stack;
+uint16_t sp;
+
 uint16_t opcode;
 uint16_t opcode_data;
 
 int main() {
-    using namespace std;
 
-    filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/games/Landing.ch8");
-    ifstream file(game_path, ios::binary);
+    std::filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/games/Landing.ch8");
+    std::ifstream file(game_path, std::ios::binary);
 
-    uint16_t game_size = filesystem::file_size(game_path);
+    uintmax_t game_size = std::filesystem::file_size(game_path);
 
     if (file.is_open()) {
         cout << "File opened successfully.\n";
@@ -75,14 +82,14 @@ int main() {
 
         case 0x6000: {
             uint16_t reg_num = (opcode & 0xF00) >> 8;
-            uint16_t value = (opcode & 0xFF);
+            uint8_t value = (opcode & 0xFF);
             regs[reg_num] = value;
             break;
         }
 
         case 0x7000: {
             uint16_t reg_num = (opcode & 0xF00) >> 8;
-            uint16_t value = (opcode & 0xFF);
+            uint8_t value = (opcode & 0xFF);
             regs[reg_num] += value;
             break;
         }
@@ -156,7 +163,7 @@ int main() {
                 break;
             }
             default: {
-                cout << "opcode " << hex << showbase << opcode << " unknown\n";
+                cout << "opcode " << std::hex << std::showbase << opcode << " unknown\n";
                 break;
             }
             }
@@ -181,7 +188,7 @@ int main() {
                 cout << "display clear\n";
                 break;
             default:
-                cout << hex << showbase << "opcode " << opcode << " unknown\n";
+                cout << std::hex << std::showbase << "opcode " << opcode << " unknown\n";
                 break;
             }
         }
