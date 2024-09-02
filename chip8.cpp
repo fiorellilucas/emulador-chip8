@@ -4,14 +4,18 @@ Chip8::Chip8() {
     // load fontset
 }
 
+void Chip8::increment_pc() {
+    pc += 2;
+}
+
 void Chip8::execute_opcode(uint16_t& opcode) {
-    increment_pc = true;
+    increment_pc_flag = true;
     uint16_t opcode_data = (opcode & 0xFFF);
 
     switch (opcode & 0xF000) {
     case 0x1000: {
         pc = opcode_data;
-        increment_pc = false;
+        increment_pc_flag = false;
         break;
     }
 
@@ -19,7 +23,7 @@ void Chip8::execute_opcode(uint16_t& opcode) {
         sp = pc;
         stack.push(sp);
         pc = opcode_data;
-        increment_pc = false;
+        increment_pc_flag = false;
         break;
     }
 
@@ -27,7 +31,7 @@ void Chip8::execute_opcode(uint16_t& opcode) {
         uint16_t reg_num = (opcode_data & 0xF00) >> 8;
         uint16_t value = (opcode_data & 0xFF);
         if (gp_regs[reg_num] == value) {
-            pc += 2;
+            increment_pc();
         }
         break;
     }
@@ -36,7 +40,7 @@ void Chip8::execute_opcode(uint16_t& opcode) {
         uint16_t reg_num = (opcode_data & 0xF00) >> 8;
         uint16_t value = (opcode_data & 0xFF);
         if (gp_regs[reg_num] != value) {
-            pc += 2;
+            increment_pc();
         }
         break;
     }
@@ -45,7 +49,7 @@ void Chip8::execute_opcode(uint16_t& opcode) {
         uint16_t reg_num_x = (opcode_data & 0xF00) >> 8;
         uint16_t reg_num_y = (opcode_data & 0xF0) >> 4;
         if (gp_regs[reg_num_x] == gp_regs[reg_num_y]) {
-            pc += 2;
+            increment_pc();
         }
         break;
     }
@@ -143,7 +147,7 @@ void Chip8::execute_opcode(uint16_t& opcode) {
         uint16_t reg_num_x = (opcode_data & 0xF00) >> 8;
         uint16_t reg_num_y = (opcode_data & 0xF0) >> 4;
         if (gp_regs[reg_num_x] != gp_regs[reg_num_y]) {
-            pc += 2;
+            increment_pc();
         }
         break;
     }
@@ -154,7 +158,7 @@ void Chip8::execute_opcode(uint16_t& opcode) {
     }
 
     case 0xB000: {
-        increment_pc = false;
+        increment_pc_flag = false;
         pc = gp_regs[0x0] + opcode_data;
         break;
     }
@@ -246,7 +250,7 @@ void Chip8::execute_opcode(uint16_t& opcode) {
         }
     }
 
-    if (increment_pc) {
-        pc += 2;
+    if (increment_pc_flag) {
+        increment_pc();
     }
 }

@@ -12,10 +12,11 @@ public:
     uint16_t index_reg = 0;
     uint16_t pc = PROGRAM_START_ADDRESS;
     uint16_t sp;
-    bool increment_pc = true;
+    bool increment_pc_flag = true;
     std::stack<uint16_t> stack;
 
     Chip8();
 
     void execute_opcode(uint16_t& opcode);
+    void increment_pc();
 };
