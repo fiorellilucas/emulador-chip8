@@ -5,6 +5,7 @@ Chip8::Chip8() {
 }
 
 void Chip8::execute_opcode(uint16_t& opcode) {
+    increment_pc = true;
     uint16_t opcode_data = (opcode & 0xFFF);
 
     switch (opcode & 0xF000) {
