@@ -56,14 +56,14 @@ void Chip8::execute_opcode(uint16_t& opcode) {
 
     case 0x6000: {
         uint16_t reg_num = (opcode_data & 0xF00) >> 8;
-        uint8_t value = (opcode_data & 0xFF);
+        uint16_t value = (opcode_data & 0xFF);
         gp_regs[reg_num] = value;
         break;
     }
 
     case 0x7000: {
         uint16_t reg_num = (opcode_data & 0xF00) >> 8;
-        uint8_t value = (opcode_data & 0xFF);
+        uint16_t value = (opcode_data & 0xFF);
         gp_regs[reg_num] += value;
         break;
     }
@@ -90,7 +90,7 @@ void Chip8::execute_opcode(uint16_t& opcode) {
             break;
         }
         case 0x4: {
-            uint8_t previous_value = gp_regs[reg_num_x];
+            uint16_t previous_value = gp_regs[reg_num_x];
             gp_regs[reg_num_x] += gp_regs[reg_num_y];
             // VF is set to 1 when there's an overflow, and to 0 when there is not.
             if (previous_value > gp_regs[reg_num_x]) {
@@ -102,7 +102,7 @@ void Chip8::execute_opcode(uint16_t& opcode) {
             break;
         }
         case 0x5: {
-            uint8_t previous_value = gp_regs[reg_num_x];
+            uint16_t previous_value = gp_regs[reg_num_x];
             gp_regs[reg_num_x] -= gp_regs[reg_num_y];
             // VF is set to 0 when there's an underflow, and 1 when there is not. (i.e. VF set to 1 if VX >= VY and 0 if not).
             if (previous_value < gp_regs[reg_num_x]) {
@@ -119,7 +119,7 @@ void Chip8::execute_opcode(uint16_t& opcode) {
             break;
         }
         case 0x7: {
-            uint8_t previous_value = gp_regs[reg_num_x];
+            uint16_t previous_value = gp_regs[reg_num_x];
             gp_regs[reg_num_x] = gp_regs[reg_num_y] - gp_regs[reg_num_x];
             // VF is set to 0 when there's an underflow, and 1 when there is not. (i.e. VF set to 1 if VY >= VX).
             if (previous_value < gp_regs[reg_num_x]) {
@@ -169,7 +169,7 @@ void Chip8::execute_opcode(uint16_t& opcode) {
         std::uniform_int_distribution<uint16_t> random_number(0, 255);
 
         uint16_t reg_num = (opcode_data & 0xF00) >> 8;
-        uint8_t value = (opcode_data & 0xFF);
+        uint16_t value = (opcode_data & 0xFF);
 
         gp_regs[reg_num] = (random_number(gen) & value);
         break;
@@ -219,12 +219,29 @@ void Chip8::execute_opcode(uint16_t& opcode) {
             break;
         }
         case 0x33: {
+            uint16_t reg_num = (opcode_data & 0xF00) >> 8;
+            
+            memory[index_reg] = (gp_regs[reg_num] & 0b111100000000);
+            memory[index_reg + 1] = (gp_regs[reg_num] & 0b11110000);
+            memory[index_reg + 2] = (gp_regs[reg_num] & 0b1111);
             break;
         }
         case 0x55: {
+            uint16_t reg_num = (opcode_data & 0xF00) >> 8;
+
+            for (uint16_t i = 0; i <= reg_num; i++) {
+                memory[index_reg + i] = gp_regs[i];
+            }
+
+            index_reg += reg_num + 1;
             break;
         }
         case 0x65: {
+            uint16_t reg_num = (opcode_data & 0xF00) >> 8;
+
+            for (uint16_t i = 0; i <= reg_num; i++) {
+                gp_regs[i] = memory[index_reg + i];
+            }
             break;
         }
         default: {
