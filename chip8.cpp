@@ -4,6 +4,12 @@ Chip8::Chip8() {
     // load fontset
 }
 
+void Chip8::change_clock(double& clock) {
+    clock_hz = clock;
+    std::chrono::duration<double, std::milli>new_period{(1.0 / clock_hz) * 1000};
+    instr_full_period = new_period;
+}
+
 void Chip8::increment_pc() {
     pc += 2;
 }
@@ -14,6 +20,29 @@ void Chip8::sleep_remaining_period(auto& start_exec_time, auto& end_exec_time) {
 
     std::this_thread::sleep_for(remaining_instr_period);
 }
+
+void Chip8::delay_timer(uint16_t& reg_num) {
+    delay_reg = gp_regs[reg_num];
+
+    change_clock(TIMER_EXEC_HZ);
+    std::this_thread::sleep_for(instr_full_period * delay_reg);
+    change_clock(NORMAL_EXEC_HZ);
+
+    delay_reg = 0;
+}
+
+void Chip8::sound_timer(uint16_t& reg_num) {
+    sound_reg = gp_regs[reg_num];
+
+    change_clock(TIMER_EXEC_HZ);
+    std::this_thread::sleep_for(instr_full_period * sound_reg);
+    change_clock(NORMAL_EXEC_HZ);
+
+    sound_reg = 0;
+
+    // MAKE SOUND
+}
+
 
 void Chip8::execute_opcode(uint16_t& opcode) {
     auto start_exec_time = std::chrono::high_resolution_clock::now();
@@ -214,9 +243,13 @@ void Chip8::execute_opcode(uint16_t& opcode) {
             break;
         }
         case 0x15: {
+            uint16_t reg_num = (opcode_data & 0xF00) >> 8;
+            delay_timer(reg_num);
             break;
         }
         case 0x18: {
+            uint16_t reg_num = (opcode_data & 0xF00) >> 8;
+            sound_timer(reg_num);
             break;
         }
         case 0x1E: {
