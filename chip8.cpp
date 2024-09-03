@@ -237,6 +237,8 @@ void Chip8::execute_opcode(uint16_t& opcode) {
     case 0xF000: {
         switch (opcode_data & 0xFF) {
         case 0x07: {
+            uint16_t reg_num = (opcode_data & 0xF00) >> 8;
+            gp_regs[reg_num] = delay_reg;
             break;
         }
         case 0x0A: {
@@ -301,7 +303,6 @@ void Chip8::execute_opcode(uint16_t& opcode) {
             stack.pop();
             break;
         case 0xE0:
-            std::cout << "display clear\n";
             break;
         default:
             std::cout << std::hex << std::showbase << "opcode " << opcode << " unknown\n";
