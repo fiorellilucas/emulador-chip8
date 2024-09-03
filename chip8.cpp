@@ -8,7 +8,16 @@ void Chip8::increment_pc() {
     pc += 2;
 }
 
+void Chip8::sleep_remaining_period(auto& start_exec_time, auto& end_exec_time) {
+    auto instr_time_taken = std::chrono::duration<double, std::milli>{ end_exec_time - start_exec_time };
+    auto remaining_instr_period = std::chrono::duration<double, std::milli>{ instr_full_period - instr_time_taken };
+
+    std::this_thread::sleep_for(remaining_instr_period);
+}
+
 void Chip8::execute_opcode(uint16_t& opcode) {
+    auto start_exec_time = std::chrono::high_resolution_clock::now();
+
     increment_pc_flag = true;
     uint16_t opcode_data = (opcode & 0xFFF);
 
@@ -220,7 +229,7 @@ void Chip8::execute_opcode(uint16_t& opcode) {
         }
         case 0x33: {
             uint16_t reg_num = (opcode_data & 0xF00) >> 8;
-            
+
             memory[index_reg] = (gp_regs[reg_num] & 0b111100000000);
             memory[index_reg + 1] = (gp_regs[reg_num] & 0b11110000);
             memory[index_reg + 2] = (gp_regs[reg_num] & 0b1111);
@@ -270,4 +279,8 @@ void Chip8::execute_opcode(uint16_t& opcode) {
     if (increment_pc_flag) {
         increment_pc();
     }
+
+    auto end_exec_time = std::chrono::high_resolution_clock::now();
+
+    sleep_remaining_period(start_exec_time, end_exec_time);
 }

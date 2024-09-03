@@ -2,7 +2,7 @@
 #include "chip8.h"
 
 int main() {
-    std::filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/games/Soccer.ch8");
+    std::filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/games/Animal Race [Brian Astle].ch8");
     std::ifstream file(game_path, std::ios::binary);
 
     Chip8 chip8;
@@ -19,6 +19,8 @@ int main() {
 
     while (true) {
         uint16_t opcode = (chip8.memory[chip8.pc] << 8 | chip8.memory[chip8.pc + 1]);
+        std::cout << std::hex << std::showbase << opcode << "\n";
+        
         chip8.execute_opcode(opcode);
     }
 
