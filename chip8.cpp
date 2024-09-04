@@ -1,12 +1,14 @@
 #include "chip8.h"
 
 Chip8::Chip8() {
-    // load fontset
+    for (uint16_t mem_index = 0; mem_index < 80; mem_index++) {
+        memory[mem_index] = fontset[mem_index];
+    }
 }
 
 void Chip8::change_clock(double& clock) {
     clock_hz = clock;
-    std::chrono::duration<double, std::milli>new_period{(1.0 / clock_hz) * 1000};
+    std::chrono::duration<double, std::milli>new_period{ (1.0 / clock_hz) * 1000 };
     instr_full_period = new_period;
 }
 
@@ -50,6 +52,12 @@ void Chip8::execute_opcode(uint16_t& opcode) {
     increment_pc_flag = true;
     uint16_t opcode_data = (opcode & 0xFFF);
 
+    uint16_t reg_num = (opcode_data & 0xF00) >> 8;
+    uint16_t reg_num_x = (opcode_data & 0xF00) >> 8;
+    uint16_t reg_num_y = (opcode_data & 0xF0) >> 4;
+
+    uint16_t value = (opcode_data & 0xFF);
+
     switch (opcode & 0xF000) {
     case 0x1000: {
         pc = opcode_data;
@@ -66,8 +74,6 @@ void Chip8::execute_opcode(uint16_t& opcode) {
     }
 
     case 0x3000: {
-        uint16_t reg_num = (opcode_data & 0xF00) >> 8;
-        uint16_t value = (opcode_data & 0xFF);
         if (gp_regs[reg_num] == value) {
             increment_pc();
         }
@@ -75,8 +81,6 @@ void Chip8::execute_opcode(uint16_t& opcode) {
     }
 
     case 0x4000: {
-        uint16_t reg_num = (opcode_data & 0xF00) >> 8;
-        uint16_t value = (opcode_data & 0xFF);
         if (gp_regs[reg_num] != value) {
             increment_pc();
         }
@@ -84,8 +88,6 @@ void Chip8::execute_opcode(uint16_t& opcode) {
     }
 
     case 0x5000: {
-        uint16_t reg_num_x = (opcode_data & 0xF00) >> 8;
-        uint16_t reg_num_y = (opcode_data & 0xF0) >> 4;
         if (gp_regs[reg_num_x] == gp_regs[reg_num_y]) {
             increment_pc();
         }
@@ -93,23 +95,16 @@ void Chip8::execute_opcode(uint16_t& opcode) {
     }
 
     case 0x6000: {
-        uint16_t reg_num = (opcode_data & 0xF00) >> 8;
-        uint16_t value = (opcode_data & 0xFF);
         gp_regs[reg_num] = value;
         break;
     }
 
     case 0x7000: {
-        uint16_t reg_num = (opcode_data & 0xF00) >> 8;
-        uint16_t value = (opcode_data & 0xFF);
         gp_regs[reg_num] += value;
         break;
     }
 
     case 0x8000: {
-        uint16_t reg_num_x = (opcode_data & 0xF00) >> 8;
-        uint16_t reg_num_y = (opcode_data & 0xF0) >> 4;
-
         switch (opcode_data & 0xF) {
         case 0x0: {
             gp_regs[reg_num_x] = gp_regs[reg_num_y];
@@ -182,8 +177,6 @@ void Chip8::execute_opcode(uint16_t& opcode) {
     }
 
     case 0x9000: {
-        uint16_t reg_num_x = (opcode_data & 0xF00) >> 8;
-        uint16_t reg_num_y = (opcode_data & 0xF0) >> 4;
         if (gp_regs[reg_num_x] != gp_regs[reg_num_y]) {
             increment_pc();
         }
@@ -205,9 +198,6 @@ void Chip8::execute_opcode(uint16_t& opcode) {
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_int_distribution<uint16_t> random_number(0, 255);
-
-        uint16_t reg_num = (opcode_data & 0xF00) >> 8;
-        uint16_t value = (opcode_data & 0xFF);
 
         gp_regs[reg_num] = (random_number(gen) & value);
         break;
@@ -237,7 +227,6 @@ void Chip8::execute_opcode(uint16_t& opcode) {
     case 0xF000: {
         switch (opcode_data & 0xFF) {
         case 0x07: {
-            uint16_t reg_num = (opcode_data & 0xF00) >> 8;
             gp_regs[reg_num] = delay_reg;
             break;
         }
@@ -245,34 +234,28 @@ void Chip8::execute_opcode(uint16_t& opcode) {
             break;
         }
         case 0x15: {
-            uint16_t reg_num = (opcode_data & 0xF00) >> 8;
             delay_timer(reg_num);
             break;
         }
         case 0x18: {
-            uint16_t reg_num = (opcode_data & 0xF00) >> 8;
             sound_timer(reg_num);
             break;
         }
         case 0x1E: {
-            uint16_t reg_num = (opcode_data & 0xF00) >> 8;
             index_reg += gp_regs[reg_num];
             break;
         }
         case 0x29: {
+            index_reg = reg_num * 0x5;
             break;
         }
         case 0x33: {
-            uint16_t reg_num = (opcode_data & 0xF00) >> 8;
-
             memory[index_reg] = (gp_regs[reg_num] & 0b111100000000);
             memory[index_reg + 1] = (gp_regs[reg_num] & 0b11110000);
             memory[index_reg + 2] = (gp_regs[reg_num] & 0b1111);
             break;
         }
         case 0x55: {
-            uint16_t reg_num = (opcode_data & 0xF00) >> 8;
-
             for (uint16_t i = 0; i <= reg_num; i++) {
                 memory[index_reg + i] = gp_regs[i];
             }
@@ -281,8 +264,6 @@ void Chip8::execute_opcode(uint16_t& opcode) {
             break;
         }
         case 0x65: {
-            uint16_t reg_num = (opcode_data & 0xF00) >> 8;
-
             for (uint16_t i = 0; i <= reg_num; i++) {
                 gp_regs[i] = memory[index_reg + i];
             }
