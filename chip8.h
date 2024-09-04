@@ -54,6 +54,7 @@ public:
 
     Chip8();
 
+    uint16_t fetch_opcode() const;
     void execute_opcode(uint16_t& opcode);
 
 };

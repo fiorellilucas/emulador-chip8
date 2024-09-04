@@ -17,7 +17,7 @@ int main() {
         }
     }
 
-    while (true) {
+        uint16_t opcode = chip8.fetch_opcode();
         uint16_t opcode = (chip8.memory[chip8.pc] << 8 | chip8.memory[chip8.pc + 1]);
         std::cout << std::hex << std::showbase << opcode << "\n";
         

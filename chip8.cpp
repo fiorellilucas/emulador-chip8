@@ -6,6 +6,10 @@ Chip8::Chip8() {
     }
 }
 
+uint16_t Chip8::fetch_opcode() const {
+    return (memory[pc] << 8 | memory[pc + 1]);
+}
+
 void Chip8::change_clock(double& clock) {
     clock_hz = clock;
     std::chrono::duration<double, std::milli>new_period{ (1.0 / clock_hz) * 1000 };
