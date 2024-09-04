@@ -2,7 +2,7 @@
 #include "chip8.h"
 
 int main() {
-    std::filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/games/Animal Race [Brian Astle].ch8");
+    std::filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/games/Pong.ch8");
     std::ifstream file(game_path, std::ios::binary);
 
     Chip8 chip8;

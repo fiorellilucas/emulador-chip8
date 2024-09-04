@@ -246,7 +246,7 @@ void Chip8::execute_opcode(uint16_t& opcode) {
             break;
         }
         case 0x29: {
-            index_reg = reg_num * 0x5;
+            index_reg = gp_regs[reg_num] * 0x5;
             break;
         }
         case 0x33: {
@@ -259,7 +259,6 @@ void Chip8::execute_opcode(uint16_t& opcode) {
             for (uint16_t i = 0; i <= reg_num; i++) {
                 memory[index_reg + i] = gp_regs[i];
             }
-
             index_reg += reg_num + 1;
             break;
         }
@@ -296,6 +295,5 @@ void Chip8::execute_opcode(uint16_t& opcode) {
     }
 
     auto end_exec_time = std::chrono::high_resolution_clock::now();
-
     sleep_remaining_period(start_exec_time, end_exec_time);
 }
