@@ -18,6 +18,11 @@ private:
     uint16_t sound_reg = 0;
     uint16_t sp;
 
+    uint16_t DEFAULT_SPRITE_WIDTH = 8;
+    uint16_t RES_SCALING = 20;
+
+    bool pixel_mapping[32][64] = { false };
+
     std::stack<uint16_t> stack;
     std::chrono::duration<double, std::milli> instr_full_period{ (1.0 / clock_hz) * 1000 };
 

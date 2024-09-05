@@ -208,7 +208,29 @@ void Chip8::execute_opcode(uint16_t& opcode) {
     }
 
     case 0xD000: {
-        std::cout << "draw sprite\n";
+        uint16_t pos_x = gp_regs[reg_num_x];
+        uint16_t pos_y = gp_regs[reg_num_y];
+
+        uint16_t sprite_height = (opcode_data & 0xF);
+        uint16_t sprite_width = DEFAULT_SPRITE_WIDTH;
+
+        for (uint16_t row = 0; row < sprite_height; row++) {
+            uint16_t sprite_data = memory[index_reg + row];
+            uint16_t pixel_data_from_mapping = 0b0;
+            
+            uint16_t bit_mask = 0b10000000;
+
+            for (uint16_t pixel = 0; pixel < 8; pixel++) {
+                pixel_data_from_mapping += pixel_mapping[pos_y][pos_x + pixel];
+
+                pixel_mapping[pos_y + row][pos_x + pixel] = (sprite_data & bit_mask) ? true : false;
+                bit_mask >>= 1;
+            }
+
+            if (!(pixel_data_from_mapping ^ sprite_data)) {
+                gp_regs[0xF] = 0x1;
+            }
+        }
         break;
     }
 
