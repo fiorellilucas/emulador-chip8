@@ -24,7 +24,6 @@ int main() {
         window.clear();
         chip8.execute_opcode(opcode, window);
     }
-
     return 0;
 }
 

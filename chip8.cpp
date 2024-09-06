@@ -335,6 +335,11 @@ void Chip8::execute_opcode(uint16_t& opcode, sf::RenderWindow& window) {
             stack.pop();
             break;
         case 0xE0:
+            for (uint16_t pixel_pos_y = 0; pixel_pos_y < 32; pixel_pos_y++) {
+                for (uint16_t pixel_pos_x = 0; pixel_pos_x < 64; pixel_pos_x++) {
+                    frame_buffer[pixel_pos_y][pixel_pos_x] = 0;
+                }
+            }
             break;
         default:
             std::cout << std::hex << std::showbase << "opcode " << opcode << " unknown\n";
