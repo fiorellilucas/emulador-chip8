@@ -3,25 +3,24 @@
 #include <random>
 #include <chrono>
 #include <thread>
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 
 class Chip8 {
 private:
-    double NORMAL_EXEC_HZ = 480.0;
+    double NORMAL_EXEC_HZ = 700000.0;
     double TIMER_EXEC_HZ = 60.0;
 
     double clock_hz = NORMAL_EXEC_HZ;
 
     uint16_t PROGRAM_START_ADDRESS = 0x200;
-    uint16_t gp_regs[16] = { 0 };
+    uint8_t gp_regs[16] = { 0 };
     uint16_t index_reg = 0;
     uint16_t delay_reg = 0;
     uint16_t sound_reg = 0;
     uint16_t sp;
 
     uint16_t DEFAULT_SPRITE_WIDTH = 8;
-    uint16_t RES_SCALING = 20;
-
-    bool pixel_mapping[32][64] = { false };
 
     std::stack<uint16_t> stack;
     std::chrono::duration<double, std::milli> instr_full_period{ (1.0 / clock_hz) * 1000 };
@@ -52,14 +51,18 @@ private:
     void change_clock(double& clock);
     void delay_timer(uint16_t& reg_num);
     void sound_timer(uint16_t& reg_num);
+    void render_pixel(uint16_t& pixel_state, uint16_t& pixel_pos_x, uint16_t& pixel_pos_y, sf::RenderWindow& window);
 
 public:
     uint16_t memory[4096] = { 0 };
     uint16_t pc = PROGRAM_START_ADDRESS;
 
+    uint16_t RES_SCALING = 20;
+    uint16_t frame_buffer[32][64] = { 0 };
+
     Chip8();
 
     uint16_t fetch_opcode() const;
-    void execute_opcode(uint16_t& opcode);
+    void execute_opcode(uint16_t& opcode, sf::RenderWindow& window);
 
 };

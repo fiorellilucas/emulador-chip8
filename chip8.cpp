@@ -49,8 +49,28 @@ void Chip8::sound_timer(uint16_t& reg_num) {
     // MAKE SOUND
 }
 
+void Chip8::render_pixel(uint16_t& pixel_state, uint16_t& pixel_pos_x, uint16_t& pixel_pos_y, sf::RenderWindow& window) {
+    if (pixel_state) {
+        sf::RectangleShape sprite_pixel(sf::Vector2f(20, 20));
+        sprite_pixel.setFillColor(sf::Color(255, 255, 255));
+        sprite_pixel.setPosition(sf::Vector2f(
+            ((pixel_pos_x * RES_SCALING) % 1280),
+            ((pixel_pos_y * RES_SCALING) % 640)
+        ));
+        window.draw(sprite_pixel);
+    }
+    else {
+        sf::RectangleShape sprite_pixel(sf::Vector2f(20, 20));
+        sprite_pixel.setFillColor(sf::Color(0, 0, 0));
+        sprite_pixel.setPosition(sf::Vector2f(
+            ((pixel_pos_x * RES_SCALING) % 1280),
+            ((pixel_pos_y * RES_SCALING) % 640)
+        ));
+        window.draw(sprite_pixel);
+    }
+}
 
-void Chip8::execute_opcode(uint16_t& opcode) {
+void Chip8::execute_opcode(uint16_t& opcode, sf::RenderWindow& window) {
     auto start_exec_time = std::chrono::high_resolution_clock::now();
 
     increment_pc_flag = true;
@@ -208,29 +228,35 @@ void Chip8::execute_opcode(uint16_t& opcode) {
     }
 
     case 0xD000: {
+        gp_regs[0xf] = 0;
+
         uint16_t pos_x = gp_regs[reg_num_x];
         uint16_t pos_y = gp_regs[reg_num_y];
-
         uint16_t sprite_height = (opcode_data & 0xF);
-        uint16_t sprite_width = DEFAULT_SPRITE_WIDTH;
 
         for (uint16_t row = 0; row < sprite_height; row++) {
-            uint16_t sprite_data = memory[index_reg + row];
-            uint16_t pixel_data_from_mapping = 0b0;
-            
+            uint16_t sprite_row_data = memory[index_reg + row];
             uint16_t bit_mask = 0b10000000;
 
             for (uint16_t pixel = 0; pixel < 8; pixel++) {
-                pixel_data_from_mapping += pixel_mapping[pos_y][pos_x + pixel];
+                uint16_t new_pixel_data = (sprite_row_data & bit_mask) ? 1 : 0;
+                uint16_t old_pixel_state = frame_buffer[pos_y + row][pos_x + pixel];
 
-                pixel_mapping[pos_y + row][pos_x + pixel] = (sprite_data & bit_mask) ? true : false;
+                if ((old_pixel_state == 1) && (new_pixel_data == 0)) { // collision detection
+                    gp_regs[0xf] = 1;
+                }
+
+                frame_buffer[pos_y + row][pos_x + pixel] ^= new_pixel_data;
                 bit_mask >>= 1;
             }
+        }
 
-            if (!(pixel_data_from_mapping ^ sprite_data)) {
-                gp_regs[0xF] = 0x1;
+        for (uint16_t pixel_pos_y = 0; pixel_pos_y < 32; pixel_pos_y++) {
+            for (uint16_t pixel_pos_x = 0; pixel_pos_x < 64; pixel_pos_x++) {
+                render_pixel(frame_buffer[pixel_pos_y][pixel_pos_x], pixel_pos_x, pixel_pos_y, window);
             }
         }
+        window.display();
         break;
     }
 
