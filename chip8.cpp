@@ -276,9 +276,9 @@ void Chip8::execute_opcode(uint16_t& opcode) {
             break;
         }
         case 0x33: {
-            memory[index_reg] = (gp_regs[reg_num] & 0b111100000000);
-            memory[index_reg + 1] = (gp_regs[reg_num] & 0b11110000);
-            memory[index_reg + 2] = (gp_regs[reg_num] & 0b1111);
+            memory[index_reg] = (gp_regs[reg_num] / 100);
+            memory[index_reg + 1] = ((gp_regs[reg_num] % 100) / 10);
+            memory[index_reg + 2] = (gp_regs[reg_num] % 10);
             break;
         }
         case 0x55: {
