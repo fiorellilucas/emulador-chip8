@@ -8,7 +8,7 @@
 
 class Chip8 {
 private:
-    double NORMAL_EXEC_HZ = 700000.0;
+    double NORMAL_EXEC_HZ = 1000000.0;
     double TIMER_EXEC_HZ = 60.0;
 
     double clock_hz = NORMAL_EXEC_HZ;
@@ -52,6 +52,7 @@ private:
     void delay_timer(uint16_t& reg_num);
     void sound_timer(uint16_t& reg_num);
     void render_pixel(uint16_t& pixel_state, uint16_t& pixel_pos_x, uint16_t& pixel_pos_y, sf::RenderWindow& window);
+    int decode_key_pressed();
 
 public:
     uint16_t memory[4096] = { 0 };

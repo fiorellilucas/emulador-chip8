@@ -28,11 +28,10 @@ int main() {
 }
 
 void load_game(Chip8& chip8) {
-    std::filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/games/Pong.ch8");
+    std::filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/chip8-test-suite-main/bin/7-beep.ch8");
     std::ifstream file(game_path, std::ios::binary);
 
     if (file.is_open()) {
-        std::cout << "File opened successfully.\n";
         uintmax_t game_size = std::filesystem::file_size(game_path);
 
         for (uint16_t i = 0; i < game_size; i++) {
