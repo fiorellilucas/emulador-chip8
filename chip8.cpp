@@ -213,37 +213,27 @@ void Chip8::execute_opcode(uint16_t& opcode, sf::RenderWindow& window) {
             break;
         }
         case 0x5: {
-            uint16_t previous_value = gp_regs[reg_num_x];
+            uint16_t borrow_flag = (gp_regs[reg_num_y] <= gp_regs[reg_num_x]);
             gp_regs[reg_num_x] -= gp_regs[reg_num_y];
-            // VF is set to 0 when there's an underflow, and 1 when there is not. (i.e. VF set to 1 if VX >= VY and 0 if not).
-            if (previous_value < gp_regs[reg_num_x]) {
-                gp_regs[0xF] = 0;
-            }
-            else {
-                gp_regs[0xF] = 1;
-            }
+            gp_regs[0xF] = borrow_flag;
             break;
         }
         case 0x6: {
-            gp_regs[0xF] = (gp_regs[reg_num_x] & 0x1);
-            gp_regs[reg_num_x] >>= 1;
+            uint16_t carry_bit = (gp_regs[reg_num_x] & 0b1);
+            gp_regs[reg_num_x] = gp_regs[reg_num_y] >> 1;
+            gp_regs[0xF] = carry_bit;
             break;
         }
         case 0x7: {
-            uint16_t previous_value = gp_regs[reg_num_x];
+            uint16_t borrow_flag = (gp_regs[reg_num_x] <= gp_regs[reg_num_y]);
             gp_regs[reg_num_x] = gp_regs[reg_num_y] - gp_regs[reg_num_x];
-            // VF is set to 0 when there's an underflow, and 1 when there is not. (i.e. VF set to 1 if VY >= VX).
-            if (previous_value < gp_regs[reg_num_x]) {
-                gp_regs[0xF] = 0;
-            }
-            else {
-                gp_regs[0xF] = 1;
-            }
+            gp_regs[0xF] = borrow_flag;
             break;
         }
         case 0xE: {
-            gp_regs[0xF] = (gp_regs[reg_num_x] & 0x80);
-            gp_regs[reg_num_x] <<= 1;
+            uint16_t carry_bit = (gp_regs[reg_num_x] & 0b10000000) ? 1 : 0;
+            gp_regs[reg_num_x] = gp_regs[reg_num_y] << 1;
+            gp_regs[0xF] = carry_bit;
             break;
         }
         default: {
