@@ -190,20 +190,22 @@ void Chip8::execute_opcode(uint16_t& opcode, sf::RenderWindow& window) {
         }
         case 0x1: {
             gp_regs[reg_num_x] |= gp_regs[reg_num_y];
+            gp_regs[0xf] = 0;
             break;
         }
         case 0x2: {
             gp_regs[reg_num_x] &= gp_regs[reg_num_y];
+            gp_regs[0xf] = 0;
             break;
         }
         case 0x3: {
             gp_regs[reg_num_x] ^= gp_regs[reg_num_y];
+            gp_regs[0xf] = 0;
             break;
         }
         case 0x4: {
             uint16_t previous_value = gp_regs[reg_num_x];
             gp_regs[reg_num_x] += gp_regs[reg_num_y];
-            // VF is set to 1 when there's an overflow, and to 0 when there is not.
             if (previous_value > gp_regs[reg_num_x]) {
                 gp_regs[0xF] = 1;
             }
