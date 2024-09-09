@@ -381,6 +381,7 @@ void Chip8::execute_opcode(uint16_t& opcode, sf::RenderWindow& window) {
             for (uint16_t i = 0; i <= reg_num; i++) {
                 gp_regs[i] = memory[index_reg + i];
             }
+            index_reg += reg_num + 1;
             break;
         }
         default: {
