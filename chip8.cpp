@@ -190,14 +190,17 @@ void Chip8::execute_opcode(uint16_t& opcode, sf::RenderWindow& window) {
         }
         case 0x1: {
             gp_regs[reg_num_x] |= gp_regs[reg_num_y];
+            gp_regs[0xf] = 0;
             break;
         }
         case 0x2: {
             gp_regs[reg_num_x] &= gp_regs[reg_num_y];
+            gp_regs[0xf] = 0;
             break;
         }
         case 0x3: {
             gp_regs[reg_num_x] ^= gp_regs[reg_num_y];
+            gp_regs[0xf] = 0;
             break;
         }
         case 0x4: {
