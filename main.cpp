@@ -1,7 +1,12 @@
 #include "main.h"
 #include "chip8.h"
 
+uint16_t RES_SCALING = 20;
+uint16_t INSTRUCTIONS_PER_FRAME = 11;
+
 void load_game(Chip8& chip8);
+void draw_pixel(uint16_t& pixel_state, uint16_t& pixel_pos_x, uint16_t& pixel_pos_y, sf::RenderWindow& window);
+void render_frame_buffer(uint16_t frame_buffer[32][64], sf::RenderWindow& window);
 
 int main() {
     Chip8 chip8;
@@ -9,12 +14,13 @@ int main() {
 
     sf::RenderWindow window(sf::VideoMode(1280, 640), "SFML works!");
     
-    //window.setFramerateLimit(60);
-    window.setVerticalSyncEnabled(true);
+    window.setFramerateLimit(60);
 
     window.clear();
     window.display();
     
+    uint16_t instructions_ran = 0;
+
     while (window.isOpen()) {
         sf::Event event;
 
@@ -25,10 +31,23 @@ int main() {
         }
 
         uint16_t opcode = chip8.fetch_opcode();
-        std::cout << std::hex << std::showbase << opcode << "\n";
-        window.clear();
         chip8.execute_opcode(opcode, window);
+
+        instructions_ran += 1;
+
+        render_frame_buffer(chip8.frame_buffer, window);
+
+        if (instructions_ran >= INSTRUCTIONS_PER_FRAME) {
+
+            if (chip8.delay_reg > 0) {
+                chip8.delay_reg -= 1;
     }
+
+            instructions_ran = 0;
+            window.display();
+        }
+    }
+
     return 0;
 }
 
@@ -41,6 +60,32 @@ void load_game(Chip8& chip8) {
 
         for (uint16_t i = 0; i < game_size; i++) {
             file.read(reinterpret_cast<char*>(&chip8.memory[chip8.pc + i]), 1);
+        }
+    }
+}
+
+void draw_pixel(uint16_t& pixel_state, uint16_t& pixel_pos_x, uint16_t& pixel_pos_y, sf::RenderWindow& window) {
+    sf::RectangleShape sprite_pixel(sf::Vector2f(20, 20));
+
+    if (pixel_state) {
+        sprite_pixel.setFillColor(sf::Color(255, 255, 255));
+    }
+    else {
+        sprite_pixel.setFillColor(sf::Color(0, 0, 0));
+    }
+
+    sprite_pixel.setPosition(sf::Vector2f(
+        (pixel_pos_x * RES_SCALING),
+        (pixel_pos_y * RES_SCALING)
+    ));
+
+    window.draw(sprite_pixel);
+}
+
+void render_frame_buffer(uint16_t frame_buffer[32][64], sf::RenderWindow& window) {
+    for (uint16_t pixel_pos_y = 0; pixel_pos_y < 32; pixel_pos_y++) {
+        for (uint16_t pixel_pos_x = 0; pixel_pos_x < 64; pixel_pos_x++) {
+            draw_pixel(frame_buffer[pixel_pos_y][pixel_pos_x], pixel_pos_x, pixel_pos_y, window);
         }
     }
 }

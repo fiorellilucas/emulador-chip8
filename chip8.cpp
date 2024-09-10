@@ -14,43 +14,6 @@ void Chip8::increment_pc() {
     pc += 2;
 }
 
-void Chip8::delay_timer(uint16_t& reg_num) {
-    delay_reg = gp_regs[reg_num];
-}
-
-void Chip8::sound_timer(uint16_t& reg_num) {
-    sound_reg = gp_regs[reg_num];
-
-    change_clock(TIMER_EXEC_HZ);
-    std::this_thread::sleep_for(instr_full_period * sound_reg);
-    change_clock(NORMAL_EXEC_HZ);
-
-    sound_reg = 0;
-
-    // MAKE SOUND
-}
-
-void Chip8::render_pixel(uint16_t& pixel_state, uint16_t& pixel_pos_x, uint16_t& pixel_pos_y, sf::RenderWindow& window) {
-    if (pixel_state) {
-        sf::RectangleShape sprite_pixel(sf::Vector2f(20, 20));
-        sprite_pixel.setFillColor(sf::Color(255, 255, 255));
-        sprite_pixel.setPosition(sf::Vector2f(
-            (pixel_pos_x * RES_SCALING),
-            (pixel_pos_y * RES_SCALING)
-        ));
-        window.draw(sprite_pixel);
-    }
-    else {
-        sf::RectangleShape sprite_pixel(sf::Vector2f(20, 20));
-        sprite_pixel.setFillColor(sf::Color(0, 0, 0));
-        sprite_pixel.setPosition(sf::Vector2f(
-            (pixel_pos_x * RES_SCALING),
-            (pixel_pos_y * RES_SCALING)
-        ));
-        window.draw(sprite_pixel);
-    }
-}
-
 int Chip8::decode_key_pressed() {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num0)) {
         return 0x0;
@@ -285,17 +248,6 @@ void Chip8::execute_opcode(uint16_t& opcode, sf::RenderWindow& window) {
             }
         }
 
-        for (uint16_t pixel_pos_y = 0; pixel_pos_y < 32; pixel_pos_y++) {
-            for (uint16_t pixel_pos_x = 0; pixel_pos_x < 64; pixel_pos_x++) {
-                render_pixel(frame_buffer[pixel_pos_y][pixel_pos_x], pixel_pos_x, pixel_pos_y, window);
-            }
-        }
-        window.display();
-
-        if (delay_reg > 0) {
-            delay_reg -= 1;
-        }
-
         break;
     }
 
@@ -344,11 +296,11 @@ void Chip8::execute_opcode(uint16_t& opcode, sf::RenderWindow& window) {
             break;
         }
         case 0x15: {
-            delay_timer(reg_num);
+            delay_reg = gp_regs[reg_num];
             break;
         }
         case 0x18: {
-            sound_timer(reg_num);
+            sound_reg = gp_regs[reg_num];
             break;
         }
         case 0x1E: {

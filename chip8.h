@@ -1,8 +1,6 @@
 #include <iostream>
 #include <stack>
 #include <random>
-#include <chrono>
-#include <thread>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
@@ -11,8 +9,6 @@ private:
     uint16_t PROGRAM_START_ADDRESS = 0x200;
     uint8_t gp_regs[16] = { 0 };
     uint16_t index_reg = 0;
-    uint16_t delay_reg = 0;
-    uint16_t sound_reg = 0;
     uint16_t sp;
 
     uint16_t DEFAULT_SPRITE_WIDTH = 8;
@@ -41,16 +37,13 @@ private:
     bool increment_pc_flag = true;
 
     void increment_pc();
-    void delay_timer(uint16_t& reg_num);
-    void sound_timer(uint16_t& reg_num);
-    void render_pixel(uint16_t& pixel_state, uint16_t& pixel_pos_x, uint16_t& pixel_pos_y, sf::RenderWindow& window);
     int decode_key_pressed();
 
 public:
     uint16_t memory[4096] = { 0 };
     uint16_t pc = PROGRAM_START_ADDRESS;
-
-    uint16_t RES_SCALING = 20;
+    uint16_t delay_reg = 0;
+    uint16_t sound_reg = 0;
     uint16_t frame_buffer[32][64] = { 0 };
 
     Chip8();
