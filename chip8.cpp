@@ -10,30 +10,14 @@ uint16_t Chip8::fetch_opcode() const {
     return (memory[pc] << 8 | memory[pc + 1]);
 }
 
-void Chip8::change_clock(double& clock) {
-    clock_hz = clock;
-    std::chrono::duration<double, std::milli>new_period{ (1.0 / clock_hz) * 1000 };
-    instr_full_period = new_period;
-}
-
 void Chip8::increment_pc() {
     pc += 2;
 }
 
-void Chip8::sleep_remaining_period(auto& start_exec_time, auto& end_exec_time) {
-    auto instr_time_taken = std::chrono::duration<double, std::milli>{ end_exec_time - start_exec_time };
-    auto remaining_instr_period = std::chrono::duration<double, std::milli>{ instr_full_period - instr_time_taken };
-
-    std::this_thread::sleep_for(remaining_instr_period);
-}
-
 void Chip8::delay_timer(uint16_t& reg_num) {
     delay_reg = gp_regs[reg_num];
-
-    change_clock(TIMER_EXEC_HZ);
-    std::this_thread::sleep_for(instr_full_period * delay_reg);
-    change_clock(NORMAL_EXEC_HZ);
-
+    std::chrono::duration<double, std::milli> sleep_period{ 16.666667 * delay_reg };
+    std::this_thread::sleep_for(sleep_period);
     delay_reg = 0;
 }
 
@@ -125,8 +109,6 @@ int Chip8::decode_key_pressed() {
 }
 
 void Chip8::execute_opcode(uint16_t& opcode, sf::RenderWindow& window) {
-    auto start_exec_time = std::chrono::high_resolution_clock::now();
-
     increment_pc_flag = true;
     uint16_t opcode_data = (opcode & 0xFFF);
 
@@ -416,7 +398,4 @@ void Chip8::execute_opcode(uint16_t& opcode, sf::RenderWindow& window) {
     if (increment_pc_flag) {
         increment_pc();
     }
-
-    auto end_exec_time = std::chrono::high_resolution_clock::now();
-    //sleep_remaining_period(start_exec_time, end_exec_time);
 }

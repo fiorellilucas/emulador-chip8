@@ -8,11 +8,6 @@
 
 class Chip8 {
 private:
-    double NORMAL_EXEC_HZ = 1000000.0;
-    double TIMER_EXEC_HZ = 60.0;
-
-    double clock_hz = NORMAL_EXEC_HZ;
-
     uint16_t PROGRAM_START_ADDRESS = 0x200;
     uint8_t gp_regs[16] = { 0 };
     uint16_t index_reg = 0;
@@ -23,7 +18,6 @@ private:
     uint16_t DEFAULT_SPRITE_WIDTH = 8;
 
     std::stack<uint16_t> stack;
-    std::chrono::duration<double, std::milli> instr_full_period{ (1.0 / clock_hz) * 1000 };
 
     uint16_t fontset[80] = {
         0xf0, 0x90, 0x90, 0x90, 0xf0, // 0
@@ -46,9 +40,7 @@ private:
 
     bool increment_pc_flag = true;
 
-    void sleep_remaining_period(auto& start_exec_time, auto& end_exec_time);
     void increment_pc();
-    void change_clock(double& clock);
     void delay_timer(uint16_t& reg_num);
     void sound_timer(uint16_t& reg_num);
     void render_pixel(uint16_t& pixel_state, uint16_t& pixel_pos_x, uint16_t& pixel_pos_y, sf::RenderWindow& window);

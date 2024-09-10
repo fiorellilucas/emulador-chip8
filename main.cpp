@@ -8,11 +8,16 @@ int main() {
     load_game(chip8);
 
     sf::RenderWindow window(sf::VideoMode(1280, 640), "SFML works!");
+    
+    //window.setFramerateLimit(60);
+    window.setVerticalSyncEnabled(true);
+
     window.clear();
     window.display();
     
     while (window.isOpen()) {
         sf::Event event;
+
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 window.close();
