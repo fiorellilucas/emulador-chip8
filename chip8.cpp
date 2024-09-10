@@ -16,9 +16,6 @@ void Chip8::increment_pc() {
 
 void Chip8::delay_timer(uint16_t& reg_num) {
     delay_reg = gp_regs[reg_num];
-    std::chrono::duration<double, std::milli> sleep_period{ 16.666667 * delay_reg };
-    std::this_thread::sleep_for(sleep_period);
-    delay_reg = 0;
 }
 
 void Chip8::sound_timer(uint16_t& reg_num) {
@@ -294,6 +291,11 @@ void Chip8::execute_opcode(uint16_t& opcode, sf::RenderWindow& window) {
             }
         }
         window.display();
+
+        if (delay_reg > 0) {
+            delay_reg -= 1;
+        }
+
         break;
     }
 
