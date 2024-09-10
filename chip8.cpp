@@ -38,8 +38,8 @@ void Chip8::render_pixel(uint16_t& pixel_state, uint16_t& pixel_pos_x, uint16_t&
         sf::RectangleShape sprite_pixel(sf::Vector2f(20, 20));
         sprite_pixel.setFillColor(sf::Color(255, 255, 255));
         sprite_pixel.setPosition(sf::Vector2f(
-            ((pixel_pos_x * RES_SCALING) % 1280),
-            ((pixel_pos_y * RES_SCALING) % 640)
+            (pixel_pos_x * RES_SCALING),
+            (pixel_pos_y * RES_SCALING)
         ));
         window.draw(sprite_pixel);
     }
@@ -47,8 +47,8 @@ void Chip8::render_pixel(uint16_t& pixel_state, uint16_t& pixel_pos_x, uint16_t&
         sf::RectangleShape sprite_pixel(sf::Vector2f(20, 20));
         sprite_pixel.setFillColor(sf::Color(0, 0, 0));
         sprite_pixel.setPosition(sf::Vector2f(
-            ((pixel_pos_x * RES_SCALING) % 1280),
-            ((pixel_pos_y * RES_SCALING) % 640)
+            (pixel_pos_x * RES_SCALING),
+            (pixel_pos_y * RES_SCALING)
         ));
         window.draw(sprite_pixel);
     }
@@ -256,25 +256,34 @@ void Chip8::execute_opcode(uint16_t& opcode, sf::RenderWindow& window) {
     }
 
     case 0xD000: {
-        gp_regs[0xf] = 0;
-
-        uint16_t pos_x = gp_regs[reg_num_x];
-        uint16_t pos_y = gp_regs[reg_num_y];
+        uint16_t pos_x = gp_regs[reg_num_x] % 64;
+        uint16_t pos_y = gp_regs[reg_num_y] % 32;
         uint16_t sprite_height = (opcode_data & 0xF);
 
+        gp_regs[0xf] = 0;
+
         for (uint16_t row = 0; row < sprite_height; row++) {
-            uint16_t sprite_row_data = memory[index_reg + row];
+            if ((pos_y + row) > 31) {
+                break;
+            }
+
+            uint16_t sprite_row_to_be_rendered = memory[index_reg + row];
             uint16_t bit_mask = 0b10000000;
 
             for (uint16_t pixel = 0; pixel < 8; pixel++) {
-                uint16_t new_pixel_data = (sprite_row_data & bit_mask) ? 1 : 0;
-                uint16_t old_pixel_state = frame_buffer[pos_y + row][pos_x + pixel];
+                if ((pos_x + pixel) > 63) {
+                    break;
+                }
 
-                if ((old_pixel_state == 1) && (new_pixel_data == 0)) { // collision detection
+                uint16_t old_pixel_state = frame_buffer[(pos_y + row) % 32][(pos_x + pixel) % 64];
+                uint16_t new_pixel_state = ((sprite_row_to_be_rendered & bit_mask) ? 1 : 0) ^ old_pixel_state;
+
+                frame_buffer[(pos_y + row) % 32][(pos_x + pixel) % 64] = new_pixel_state;
+
+                if ((old_pixel_state == 1) && (new_pixel_state == 0)) {
                     gp_regs[0xf] = 1;
                 }
 
-                frame_buffer[pos_y + row][pos_x + pixel] ^= new_pixel_data;
                 bit_mask >>= 1;
             }
         }
