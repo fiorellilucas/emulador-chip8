@@ -1,8 +1,8 @@
 #include "main.h"
 #include "chip8.h"
 
-uint16_t RES_SCALING = 20;
-uint16_t INSTRUCTIONS_PER_FRAME = 11;
+constexpr uint16_t RES_SCALING = 20;
+constexpr uint16_t INSTRUCTIONS_PER_FRAME = 11;
 
 void load_game(Chip8& chip8);
 void draw_pixel(uint16_t& pixel_state, uint16_t& pixel_pos_x, uint16_t& pixel_pos_y, sf::RenderWindow& window);
@@ -16,11 +16,11 @@ int main() {
     window.setFramerateLimit(60);
     window.clear();
     window.display();
-    
+
     sf::SoundBuffer buffer;
     sf::Sound sound;
     sound.setVolume(30);
-    buffer.loadFromFile("C:/Users/lucas/Downloads/beep-400.wav");
+    buffer.loadFromFile("C:/Users/lucas/Downloads/beep-1200.wav");
 
     uint16_t instructions_ran = 0;
 
@@ -44,7 +44,7 @@ int main() {
 
             if (chip8.delay_reg > 0) {
                 chip8.delay_reg -= 1;
-    }
+            }
 
             if (chip8.sound_reg > 0) {
                 sound.setBuffer(buffer);
@@ -62,7 +62,9 @@ int main() {
 }
 
 void load_game(Chip8& chip8) {
-    std::filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/chip8-test-suite-main/bin/7-beep.ch8");
+    std::filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/games/Brick (Brix hack, 1990).ch8");
+    //std::filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/demos/Particle Demo [zeroZshadow, 2008].ch8");
+    //std::filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/chip8-test-suite-main/bin/7-beep.ch8");
     std::ifstream file(game_path, std::ios::binary);
 
     if (file.is_open()) {
