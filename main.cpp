@@ -12,7 +12,7 @@ static int WinMain() {
     Chip8 chip8;
     load_game(chip8);
 
-    sf::RenderWindow window(sf::VideoMode(1280, 640), "SFML works!");
+    sf::RenderWindow window(sf::VideoMode(1280, 640), "Chip8 emulator");
     window.setFramerateLimit(60);
     window.clear();
     window.display();
@@ -20,7 +20,7 @@ static int WinMain() {
     sf::SoundBuffer buffer;
     sf::Sound sound;
     sound.setVolume(30);
-    buffer.loadFromFile("C:/Users/lucas/Downloads/beep-1200.wav");
+    buffer.loadFromFile("./assets/beep-1200.wav");
 
     uint16_t instructions_ran = 0;
 
@@ -62,7 +62,7 @@ static int WinMain() {
 }
 
 void load_game(Chip8& chip8) {
-    std::filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/games/Brick (Brix hack, 1990).ch8");
+    std::filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/games/Pong.ch8");
     //std::filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/demos/Particle Demo [zeroZshadow, 2008].ch8");
     //std::filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/chip8-test-suite-main/bin/7-beep.ch8");
     std::ifstream file(game_path, std::ios::binary);
