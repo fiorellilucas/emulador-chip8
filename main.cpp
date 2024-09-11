@@ -13,12 +13,15 @@ int main() {
     load_game(chip8);
 
     sf::RenderWindow window(sf::VideoMode(1280, 640), "SFML works!");
-    
     window.setFramerateLimit(60);
-
     window.clear();
     window.display();
     
+    sf::SoundBuffer buffer;
+    sf::Sound sound;
+    sound.setVolume(30);
+    buffer.loadFromFile("C:/Users/lucas/Downloads/beep-400.wav");
+
     uint16_t instructions_ran = 0;
 
     while (window.isOpen()) {
@@ -42,6 +45,13 @@ int main() {
             if (chip8.delay_reg > 0) {
                 chip8.delay_reg -= 1;
     }
+
+            if (chip8.sound_reg > 0) {
+                sound.setBuffer(buffer);
+                sound.play();
+
+                chip8.sound_reg -= 1;
+            }
 
             instructions_ran = 0;
             window.display();
