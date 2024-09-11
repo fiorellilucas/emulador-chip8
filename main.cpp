@@ -20,7 +20,7 @@ int main() {
     sf::SoundBuffer buffer;
     sf::Sound sound;
     sound.setVolume(30);
-    buffer.loadFromFile("C:/Users/lucas/Downloads/beep-400.wav");
+    buffer.loadFromFile("C:/Users/lucas/Downloads/beep-1200.wav");
 
     uint16_t instructions_ran = 0;
 
