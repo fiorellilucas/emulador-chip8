@@ -8,7 +8,7 @@ void load_game(Chip8& chip8);
 void draw_pixel(uint16_t& pixel_state, uint16_t& pixel_pos_x, uint16_t& pixel_pos_y, sf::RenderWindow& window);
 void render_frame_buffer(uint16_t frame_buffer[32][64], sf::RenderWindow& window);
 
-static int WinMain() {
+int wWinMain() {
     Chip8 chip8;
     load_game(chip8);
 
