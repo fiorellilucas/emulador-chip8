@@ -23,6 +23,7 @@ int wWinMain() {
     buffer.loadFromFile("./assets/beep-1200.wav");
 
     uint16_t instructions_ran = 0;
+    uint16_t opcode = 0x0;
 
     while (window.isOpen()) {
         sf::Event event;
@@ -33,13 +34,12 @@ int wWinMain() {
             }
         }
 
-        uint16_t opcode = cpu.fetch_opcode(mem);
+        opcode = cpu.fetch_opcode(mem);
         cpu.execute_opcode(opcode, mem, gpu, window);
-
-        instructions_ran += 1;
 
         gpu.render_frame_buffer(window);
 
+        instructions_ran += 1;
         if (instructions_ran >= INSTRUCTIONS_PER_FRAME) {
 
             if (cpu.delay_reg > 0) {
