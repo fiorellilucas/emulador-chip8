@@ -7,9 +7,9 @@ constexpr uint16_t PROGRAM_START_ADDRESS = 0x200;
 
 class GPU;
 
-class Chip8 {
+class CPU {
 public:
-    Chip8();
+    CPU();
 
     uint16_t memory[4096] = { 0 };
     uint16_t pc = PROGRAM_START_ADDRESS;

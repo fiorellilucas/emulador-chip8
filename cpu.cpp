@@ -1,21 +1,21 @@
-#include "chip8.h"
+#include "cpu.h"
 #include "gpu.h"
 
-Chip8::Chip8() {
+CPU::CPU() {
     for (uint16_t mem_index = 0; mem_index < 80; mem_index++) {
         memory[mem_index] = fontset[mem_index];
     }
 }
 
-uint16_t Chip8::fetch_opcode() const {
+uint16_t CPU::fetch_opcode() const {
     return (memory[pc] << 8 | memory[pc + 1]);
 }
 
-void Chip8::increment_pc() {
+void CPU::increment_pc() {
     pc += 2;
 }
 
-int Chip8::decode_key_pressed() {
+int CPU::decode_key_pressed() {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num0)) {
         return 0x0;
     }
@@ -69,7 +69,7 @@ int Chip8::decode_key_pressed() {
     }
 }
 
-void Chip8::execute_opcode(uint16_t& opcode, GPU& gpu, sf::RenderWindow& window) {
+void CPU::execute_opcode(uint16_t& opcode, GPU& gpu, sf::RenderWindow& window) {
     increment_pc_flag = true;
     uint16_t opcode_data = (opcode & 0xFFF);
 
