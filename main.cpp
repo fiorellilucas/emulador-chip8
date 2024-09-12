@@ -1,18 +1,16 @@
 #include "main.h"
-#include "cpu.h"
 #include "gpu.h"
 #include "memory.h"
+#include "cpu.h"
 
 constexpr uint16_t INSTRUCTIONS_PER_FRAME = 11;
 
-void load_game(Memory& mem, CPU& cpu);
-
 int wWinMain() {
-    CPU cpu;
     GPU gpu;
     Memory mem;
+    CPU cpu;
     
-    load_game(mem, cpu);
+    mem.load_game();
 
     sf::RenderWindow window(sf::VideoMode(1280, 640), "Chip8 emulator");
     window.setFramerateLimit(60);
@@ -61,19 +59,4 @@ int wWinMain() {
     }
 
     return 0;
-}
-
-void load_game(Memory& mem, CPU& cpu) {
-    std::filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/games/Brick (Brix hack, 1990).ch8");
-    //std::filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/demos/Particle Demo [zeroZshadow, 2008].ch8");
-    //std::filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/chip8-test-suite-main/bin/7-beep.ch8");
-    std::ifstream file(game_path, std::ios::binary);
-
-    if (file.is_open()) {
-        uintmax_t game_size = std::filesystem::file_size(game_path);
-
-        for (uint16_t i = 0; i < game_size; i++) {
-            file.read(reinterpret_cast<char*>(&mem.memory[cpu.pc + i]), 1);
-        }
-    }
 }

@@ -1,6 +1,6 @@
-#include "cpu.h"
 #include "gpu.h"
 #include "memory.h"
+#include "cpu.h"
 
 CPU::CPU(){};
 

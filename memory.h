@@ -1,9 +1,15 @@
 #include <iostream>
+#include <fstream>
+#include <filesystem>
+
+constexpr uint16_t PROGRAM_START_ADDRESS = 0x200;
 
 class Memory {
 public:
     Memory();
     uint16_t memory[4096] = { 0 };
+
+    void load_game();
 
 private:
     uint16_t fontset[80] = {

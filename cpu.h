@@ -3,8 +3,6 @@
 #include <random>
 #include <SFML/Graphics.hpp>
 
-constexpr uint16_t PROGRAM_START_ADDRESS = 0x200;
-
 class GPU;
 class Memory;
 
