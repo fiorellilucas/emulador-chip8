@@ -1,14 +1,11 @@
 #include "cpu.h"
 #include "gpu.h"
+#include "memory.h"
 
-CPU::CPU() {
-    for (uint16_t mem_index = 0; mem_index < 80; mem_index++) {
-        memory[mem_index] = fontset[mem_index];
-    }
-}
+CPU::CPU(){};
 
-uint16_t CPU::fetch_opcode() const {
-    return (memory[pc] << 8 | memory[pc + 1]);
+uint16_t CPU::fetch_opcode(Memory& mem) const {
+    return (mem.memory[pc] << 8 | mem.memory[pc + 1]);
 }
 
 void CPU::increment_pc() {
@@ -69,7 +66,7 @@ int CPU::decode_key_pressed() {
     }
 }
 
-void CPU::execute_opcode(uint16_t& opcode, GPU& gpu, sf::RenderWindow& window) {
+void CPU::execute_opcode(uint16_t& opcode, Memory& mem, GPU& gpu, sf::RenderWindow& window) {
     increment_pc_flag = true;
     uint16_t opcode_data = (opcode & 0xFFF);
 
@@ -228,7 +225,7 @@ void CPU::execute_opcode(uint16_t& opcode, GPU& gpu, sf::RenderWindow& window) {
                 break;
             }
 
-            uint16_t sprite_row_to_be_rendered = memory[index_reg + row];
+            uint16_t sprite_row_to_be_rendered = mem.memory[index_reg + row];
             uint16_t bit_mask = 0b10000000;
 
             for (uint16_t pixel = 0; pixel < 8; pixel++) {
@@ -313,21 +310,21 @@ void CPU::execute_opcode(uint16_t& opcode, GPU& gpu, sf::RenderWindow& window) {
             break;
         }
         case 0x33: {
-            memory[index_reg] = (gp_regs[reg_num] / 100);
-            memory[index_reg + 1] = ((gp_regs[reg_num] % 100) / 10);
-            memory[index_reg + 2] = (gp_regs[reg_num] % 10);
+            mem.memory[index_reg] = (gp_regs[reg_num] / 100);
+            mem.memory[index_reg + 1] = ((gp_regs[reg_num] % 100) / 10);
+            mem.memory[index_reg + 2] = (gp_regs[reg_num] % 10);
             break;
         }
         case 0x55: {
             for (uint16_t i = 0; i <= reg_num; i++) {
-                memory[index_reg + i] = gp_regs[i];
+                mem.memory[index_reg + i] = gp_regs[i];
             }
             index_reg += reg_num + 1;
             break;
         }
         case 0x65: {
             for (uint16_t i = 0; i <= reg_num; i++) {
-                gp_regs[i] = memory[index_reg + i];
+                gp_regs[i] = mem.memory[index_reg + i];
             }
             index_reg += reg_num + 1;
             break;

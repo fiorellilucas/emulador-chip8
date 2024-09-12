@@ -147,11 +147,13 @@
     <ClCompile Include="main.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\lucas\source\repos\emulador-chip8\emulador-chip8.sln</AdditionalIncludeDirectories>
     </ClCompile>
+    <ClCompile Include="memory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cpu.h" />
     <ClInclude Include="gpu.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="memory.h" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="assets\beep-1200.wav" />
