@@ -1,4 +1,5 @@
 #include "chip8.h"
+#include "gpu.h"
 
 Chip8::Chip8() {
     for (uint16_t mem_index = 0; mem_index < 80; mem_index++) {
@@ -68,7 +69,7 @@ int Chip8::decode_key_pressed() {
     }
 }
 
-void Chip8::execute_opcode(uint16_t& opcode, sf::RenderWindow& window) {
+void Chip8::execute_opcode(uint16_t& opcode, GPU& gpu, sf::RenderWindow& window) {
     increment_pc_flag = true;
     uint16_t opcode_data = (opcode & 0xFFF);
 
@@ -235,10 +236,10 @@ void Chip8::execute_opcode(uint16_t& opcode, sf::RenderWindow& window) {
                     break;
                 }
 
-                uint16_t old_pixel_state = frame_buffer[(pos_y + row) % 32][(pos_x + pixel) % 64];
+                uint16_t old_pixel_state = gpu.frame_buffer[(pos_y + row) % 32][(pos_x + pixel) % 64];
                 uint16_t new_pixel_state = ((sprite_row_to_be_rendered & bit_mask) ? 1 : 0) ^ old_pixel_state;
 
-                frame_buffer[(pos_y + row) % 32][(pos_x + pixel) % 64] = new_pixel_state;
+                gpu.frame_buffer[(pos_y + row) % 32][(pos_x + pixel) % 64] = new_pixel_state;
 
                 if ((old_pixel_state == 1) && (new_pixel_state == 0)) {
                     gp_regs[0xf] = 1;
@@ -348,7 +349,7 @@ void Chip8::execute_opcode(uint16_t& opcode, sf::RenderWindow& window) {
         case 0xE0:
             for (uint16_t pixel_pos_y = 0; pixel_pos_y < 32; pixel_pos_y++) {
                 for (uint16_t pixel_pos_x = 0; pixel_pos_x < 64; pixel_pos_x++) {
-                    frame_buffer[pixel_pos_y][pixel_pos_x] = 0;
+                    gpu.frame_buffer[pixel_pos_y][pixel_pos_x] = 0;
                 }
             }
             break;
