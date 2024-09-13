@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cpu.cpp" />
+    <ClCompile Include="emulator.cpp" />
     <ClCompile Include="gpu.cpp" />
     <ClCompile Include="main.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\lucas\source\repos\emulador-chip8\emulador-chip8.sln</AdditionalIncludeDirectories>
@@ -151,6 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cpu.h" />
+    <ClInclude Include="emulator.h" />
     <ClInclude Include="gpu.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="memory.h" />

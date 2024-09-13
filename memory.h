@@ -9,7 +9,7 @@ public:
     Memory();
     uint16_t memory[4096] = { 0 };
 
-    void load_game();
+    bool load_game();
 
 private:
     uint16_t fontset[80] = {
