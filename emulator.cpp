@@ -1,15 +1,24 @@
 #include "emulator.h"
 
 Emulator::Emulator() {
-    window = std::make_unique<sf::RenderWindow>(sf::VideoMode(1280, 640), "Chip8 emulator");
+    window = std::make_unique<sf::RenderWindow>(sf::VideoMode(1280, 640), "Chip-8 emulator");
     window->setFramerateLimit(60);
     window->clear();
-    window->display();
     
     buffer_.loadFromFile("./assets/beep-1200.wav");
     sound = std::make_unique<sf::Sound>();
     sound->setBuffer(buffer_);
     sound->setVolume(30);
+
+    font_.loadFromFile("./assets/VT323-Regular.ttf");
+    text_.setFont(font_);
+    text_.setFillColor(sf::Color::White);
+    text_.setCharacterSize(56);
+
+    text_.setString("Chip-8 emulator");
+
+    window->draw(text_);
+    window->display();
 }
 
 uint16_t Emulator::decode_key_pressed() {

@@ -18,5 +18,6 @@ public:
 
 private:
     sf::SoundBuffer buffer_;
-
+    sf::Font font_;
+    sf::Text text_;
 };
