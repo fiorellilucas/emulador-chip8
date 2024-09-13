@@ -22,3 +22,8 @@ bool Memory::load_game() {
     
     return true;
 }
+
+
+uint16_t Memory::fetch_opcode(uint16_t& pc) const {
+    return (memory[pc] << 8 | memory[pc + 1]);
+}

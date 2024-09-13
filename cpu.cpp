@@ -4,10 +4,6 @@
 
 CPU::CPU(){};
 
-uint16_t CPU::fetch_opcode(Memory& mem) const {
-    return (mem.memory[pc] << 8 | mem.memory[pc + 1]);
-}
-
 void CPU::increment_pc() {
     pc += 2;
 }

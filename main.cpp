@@ -24,7 +24,7 @@ int wWinMain() {
         }
 
         if (emulator.game_is_loaded) {
-            emulator.opcode = cpu.fetch_opcode(mem);
+            emulator.opcode = mem.fetch_opcode(cpu.pc);
 
             cpu.execute_opcode(emulator.opcode, mem, gpu, *emulator.window);
             gpu.render_frame_buffer(*emulator.window);

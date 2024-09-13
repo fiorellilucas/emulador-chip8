@@ -10,6 +10,7 @@ public:
     uint16_t memory[4096] = { 0 };
 
     bool load_game();
+    uint16_t fetch_opcode(uint16_t& pc) const;
 
 private:
     uint16_t fontset[80] = {

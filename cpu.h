@@ -14,7 +14,6 @@ public:
     uint16_t delay_reg = 0;
     uint16_t sound_reg = 0;
 
-    uint16_t fetch_opcode(Memory& mem) const;
     void execute_opcode(uint16_t& opcode, Memory& mem, GPU& gpu, sf::RenderWindow& window);
 
 private:
