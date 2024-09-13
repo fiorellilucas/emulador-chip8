@@ -25,8 +25,9 @@ int wWinMain() {
 
         if (emulator.game_is_loaded) {
             emulator.opcode = mem.fetch_opcode(cpu.pc);
-
-            cpu.execute_opcode(emulator.opcode, mem, gpu, *emulator.window);
+            uint16_t key_pressed = emulator.decode_key_pressed();
+            
+            cpu.execute_opcode(emulator.opcode, mem, gpu, *emulator.window, key_pressed);
             gpu.render_frame_buffer(*emulator.window);
 
             emulator.instructions_ran += 1;

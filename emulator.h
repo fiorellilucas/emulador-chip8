@@ -14,6 +14,8 @@ public:
     uint16_t instructions_ran = 0;
     uint16_t opcode = 0x0;
 
+    uint16_t decode_key_pressed();
+
 private:
     sf::SoundBuffer buffer_;
 

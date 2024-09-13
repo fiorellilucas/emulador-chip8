@@ -8,61 +8,7 @@ void CPU::increment_pc() {
     pc += 2;
 }
 
-int CPU::decode_key_pressed() {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num0)) {
-        return 0x0;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1)) {
-        return 0x1;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2)) {
-        return 0x2;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3)) {
-        return 0x3;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4)) {
-        return 0x4;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num5)) {
-        return 0x5;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num6)) {
-        return 0x6;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num7)) {
-        return 0x7;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num8)) {
-        return 0x8;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num9)) {
-        return 0x9;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-        return 0xA;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::B)) {
-        return 0xB;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::C)) {
-        return 0xC;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-        return 0xD;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) {
-        return 0xE;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::F)) {
-        return 0xF;
-    }
-    else {
-        return NULL;
-    }
-}
-
-void CPU::execute_opcode(uint16_t& opcode, Memory& mem, GPU& gpu, sf::RenderWindow& window) {
+void CPU::execute_opcode(uint16_t& opcode, Memory& mem, GPU& gpu, sf::RenderWindow& window, uint16_t& key_pressed) {
     increment_pc_flag = true;
     uint16_t opcode_data = (opcode & 0xFFF);
 
@@ -248,15 +194,13 @@ void CPU::execute_opcode(uint16_t& opcode, Memory& mem, GPU& gpu, sf::RenderWind
     case 0xE000: {
         switch (opcode_data & 0xFF) {
         case 0x9E: {
-            uint16_t current_key_pressed = decode_key_pressed();
-            if (current_key_pressed == gp_regs[reg_num]) {
+            if (key_pressed == gp_regs[reg_num]) {
                 increment_pc();
             }
             break;
         }
         case 0xA1: {
-            uint16_t current_key_pressed = decode_key_pressed();
-            if (current_key_pressed != gp_regs[reg_num]) {
+            if (key_pressed != gp_regs[reg_num]) {
                 increment_pc();
             }
             break;
@@ -280,8 +224,7 @@ void CPU::execute_opcode(uint16_t& opcode, Memory& mem, GPU& gpu, sf::RenderWind
             sf::Event key_event;
             while (window.waitEvent(key_event)) {
                 if (key_event.type == sf::Event::KeyPressed) {
-                    uint16_t current_key_pressed = decode_key_pressed();
-                    gp_regs[reg_num] = current_key_pressed;
+                    gp_regs[reg_num] = key_pressed;
                 }
                 else if (key_event.type == sf::Event::KeyReleased) {
                     break;
