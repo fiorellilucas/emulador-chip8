@@ -6,6 +6,9 @@
 # Ignore DLLs
 *.dll
 
+# Ignore the roms folder
+roms/
+
 # User-specific files
 *.rsuser
 *.suo
