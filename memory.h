@@ -7,6 +7,8 @@ constexpr uint16_t PROGRAM_START_ADDRESS = 0x200;
 class Memory {
 public:
     Memory();
+    ~Memory();
+
     uint16_t memory[4096] = { 0 };
 
     bool load_game();

@@ -2,7 +2,9 @@
 #include "memory.h"
 #include "cpu.h"
 
-CPU::CPU(){};
+CPU::CPU() {}
+
+CPU::~CPU() {}
 
 void CPU::increment_pc() {
     pc += 2;

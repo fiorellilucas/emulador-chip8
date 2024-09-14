@@ -2,6 +2,8 @@
 
 GPU::GPU() {}
 
+GPU::~GPU() {}
+
 void GPU::draw_pixel(uint16_t& pixel_state, uint16_t& pixel_pos_x, uint16_t& pixel_pos_y, sf::RenderWindow& window) {
     sf::RectangleShape sprite_pixel(sf::Vector2f(20, 20));
 

@@ -6,7 +6,7 @@ Memory::Memory() {
     }
 }
 
-bool Memory::load_game() {
+Memory::~Memory() {}
     std::filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/games/Brick (Brix hack, 1990).ch8");
     //std::filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/demos/Particle Demo [zeroZshadow, 2008].ch8");
     //std::filesystem::path game_path("C:/Users/lucas/Documents/chip8-roms/chip8-test-suite-main/bin/7-beep.ch8");

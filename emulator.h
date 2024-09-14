@@ -6,6 +6,7 @@
 class Emulator {
 public:
     Emulator();
+    ~Emulator();
     
     std::unique_ptr<sf::RenderWindow> window; 
     std::unique_ptr<sf::Sound> sound;

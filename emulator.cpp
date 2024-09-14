@@ -21,6 +21,8 @@ Emulator::Emulator() {
     window->display();
 }
 
+Emulator::~Emulator() {}
+
 uint16_t Emulator::decode_key_pressed() {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num0)) {
         return 0x0;

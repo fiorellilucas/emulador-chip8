@@ -9,6 +9,7 @@ class Memory;
 class CPU {
 public:
     CPU();
+    ~CPU();
 
     uint16_t pc = PROGRAM_START_ADDRESS;
     uint16_t delay_reg = 0;
@@ -26,4 +27,5 @@ private:
     bool increment_pc_flag = true;
 
     void increment_pc();
+
 };

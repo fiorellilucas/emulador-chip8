@@ -6,6 +6,7 @@ constexpr uint16_t RES_SCALING = 20;
 class GPU {
 public:
     GPU();
+    ~GPU();
 
     uint16_t frame_buffer[32][64] = { 0 };
 
