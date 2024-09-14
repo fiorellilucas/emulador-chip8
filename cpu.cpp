@@ -223,12 +223,15 @@ void CPU::execute_opcode(uint16_t& opcode, Memory& mem, GPU& gpu, sf::RenderWind
             break;
         }
         case 0x0A: {
-            sf::Event key_event;
-            while (window.waitEvent(key_event)) {
-                if (key_event.type == sf::Event::KeyPressed) {
+            sf::Event event;
+            while (window.waitEvent(event)) {
+                if (event.type == sf::Event::Closed) {
+                    window.close();
+                }
+                if (event.type == sf::Event::KeyPressed) {
                     gp_regs[reg_num] = key_pressed;
                 }
-                else if (key_event.type == sf::Event::KeyReleased) {
+                else if (event.type == sf::Event::KeyReleased) {
                     break;
                 }
             }
