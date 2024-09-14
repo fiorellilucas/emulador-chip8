@@ -1,10 +1,17 @@
+#include "memory.h"
+#include "cpu.h"
+#include "gpu.h"
 #include "emulator.h"
 
 Emulator::Emulator() {
+    cpu = std::make_unique<CPU>();
+    mem = std::make_unique<Memory>();
+    gpu = std::make_unique<GPU>();
+
     window = std::make_unique<sf::RenderWindow>(sf::VideoMode(1280, 640), "Chip-8 emulator");
     window->setFramerateLimit(60);
     window->clear();
-    
+
     buffer_.loadFromFile("./assets/beep-1200.wav");
     sound = std::make_unique<sf::Sound>();
     sound->setBuffer(buffer_);
@@ -13,11 +20,16 @@ Emulator::Emulator() {
     font_.loadFromFile("./assets/VT323-Regular.ttf");
     text_.setFont(font_);
     text_.setFillColor(sf::Color::White);
-    text_.setCharacterSize(56);
 
-    text_.setString("Chip-8 emulator");
+    // fills the game_entries_ vector with all the roms (std::filesystem::directory_entry's)
+    if (!std::filesystem::is_empty(games_path_)) {
+        for (auto const& rom : std::filesystem::directory_iterator{ games_path_ })
+            if (rom.path().extension() == ".ch8") {
+                games_entries_.push_back(rom);
+            }
+    }
 
-    window->draw(text_);
+    list_games();
     window->display();
 }
 
@@ -75,4 +87,65 @@ uint16_t Emulator::decode_key_pressed() {
     else {
         return NULL;
     }
+}
+
+uint16_t Emulator::num_games_installed() {
+    return games_entries_.size();
+}
+
+void Emulator::draw_logo_() {
+    text_.setFillColor(sf::Color::White);
+    text_.setCharacterSize(64);
+    text_.setPosition(20, 0);
+    text_.setString("Chip-8 emulator");
+    window->draw(text_);
+}
+
+void Emulator::list_games() {
+    draw_logo_();
+
+    text_.setCharacterSize(32);
+    uint16_t line_pos_x = 20;
+    uint16_t line_pos_y = 100;
+
+    if (!games_entries_.empty()) {
+        uint16_t page_start = (game_hovered / GAMES_PER_PAGE_) * GAMES_PER_PAGE_;
+
+        for (uint16_t i = page_start; i < (page_start + GAMES_PER_PAGE_); i++) {
+            if (i >= num_games_installed()) {
+                break;
+            }
+
+            if (i == game_hovered) {
+                text_.setFillColor(sf::Color::Cyan);
+            }
+            else {
+                text_.setFillColor(sf::Color::White);
+            }
+            text_.setString(sf::String(games_entries_[i].path().stem()));
+            text_.setPosition(sf::Vector2f(line_pos_x, line_pos_y));
+            window->draw(text_);
+
+            line_pos_y += 50;
+        }
+    }
+    else {
+        text_.setString("No roms available");
+        text_.setPosition(sf::Vector2f(line_pos_x, line_pos_y));
+        window->draw(text_);
+    }
+}
+
+std::filesystem::directory_entry Emulator::game_selected() {
+    return games_entries_[game_hovered];
+}
+
+void Emulator::reset_system() {
+    cpu->~CPU();
+    mem->~Memory();
+    gpu->~GPU();
+
+    cpu = std::make_unique<CPU>();
+    mem = std::make_unique<Memory>();
+    gpu = std::make_unique<GPU>();
 }

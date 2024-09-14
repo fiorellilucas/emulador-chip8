@@ -9,12 +9,6 @@ constexpr uint16_t INSTRUCTIONS_PER_FRAME = 11;
 int wWinMain() {
     Emulator emulator;
 
-    CPU cpu;
-    Memory mem;
-    GPU gpu;
-    
-    emulator.game_is_loaded = mem.load_game();
-
     while (emulator.window->isOpen()) {
         sf::Event event;
         while (emulator.window->pollEvent(event)) {
@@ -23,26 +17,54 @@ int wWinMain() {
             }
         }
 
+        if (event.key.code == sf::Keyboard::Escape) {
+            emulator.game_is_loaded = false;
+            emulator.reset_system();
+        }
+
         if (emulator.game_is_loaded) {
-            emulator.opcode = mem.fetch_opcode(cpu.pc);
+            emulator.opcode = emulator.mem->fetch_opcode(emulator.cpu->pc);
             uint16_t key_pressed = emulator.decode_key_pressed();
-            
-            cpu.execute_opcode(emulator.opcode, mem, gpu, *emulator.window, key_pressed);
-            gpu.render_frame_buffer(*emulator.window);
+
+            emulator.cpu->execute_opcode(emulator.opcode, *emulator.mem, *emulator.gpu, *emulator.window, key_pressed);
+            emulator.gpu->render_frame_buffer(*emulator.window);
 
             emulator.instructions_ran += 1;
             if (emulator.instructions_ran >= INSTRUCTIONS_PER_FRAME) {
-                if (cpu.delay_reg > 0) {
-                    cpu.delay_reg -= 1;
+                if (emulator.cpu->delay_reg > 0) {
+                    emulator.cpu->delay_reg -= 1;
                 }
 
-                if (cpu.sound_reg > 0) {
+                if (emulator.cpu->sound_reg > 0) {
                     emulator.sound->play();
-                    cpu.sound_reg -= 1;
+                    emulator.cpu->sound_reg -= 1;
                 }
 
                 emulator.instructions_ran = 0;
                 emulator.window->display();
+            }
+        }
+        else {
+            emulator.window->clear();
+            emulator.list_games();
+            emulator.window->display();
+
+            while (emulator.window->pollEvent(event)) {
+                if (event.type == sf::Event::Closed) {
+                    emulator.window->close();
+                }
+
+                if (event.type == sf::Event::KeyPressed) {
+                    if (event.key.code == sf::Keyboard::W) {
+                        emulator.game_hovered > 0 ? emulator.game_hovered -= 1 : NULL;
+                    }
+                    else if (event.key.code == sf::Keyboard::S) {
+                        emulator.game_hovered < (emulator.num_games_installed() - 1) ? emulator.game_hovered += 1 : NULL;
+                    }
+                    else if (event.key.code == sf::Keyboard::Enter) {
+                        emulator.game_is_loaded = emulator.mem->load_game(emulator.game_selected());
+                    }
+                }
             }
         }
     }
