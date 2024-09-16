@@ -95,7 +95,7 @@ uint16_t Emulator::num_games_installed() {
 
 void Emulator::draw_logo_() {
     text_.setFillColor(sf::Color::White);
-    text_.setCharacterSize(64);
+    text_.setCharacterSize(80);
     text_.setPosition(20, 0);
     text_.setString("Chip-8 emulator");
     window->draw(text_);
@@ -106,7 +106,7 @@ void Emulator::list_games() {
 
     text_.setCharacterSize(32);
     uint16_t line_pos_x = 20;
-    uint16_t line_pos_y = 100;
+    uint16_t line_pos_y = 110;
 
     if (games_entries_.empty()) {
         text_.setString("No roms available");
