@@ -34,7 +34,7 @@ private:
     sf::Font font_;
     sf::Text text_;
 
-    std::filesystem::path games_path_ = "./roms/games";
+    std::filesystem::path games_path_ = "./roms";
     std::vector<std::filesystem::directory_entry> games_entries_;
 
     void draw_logo_();
