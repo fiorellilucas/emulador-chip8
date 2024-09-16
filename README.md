@@ -2,13 +2,13 @@
 Um simples emulador da plataforma Chip8 feito em C++, utlizando a biblioteca SFML para gráficos, áudio e entradas.
 
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/9a3c2e85-c9e1-40ed-b949-d39f989ad295" alt="video-emulador-chip8" height="500">
+  <img src="https://github.com/user-attachments/assets/9a3c2e85-c9e1-40ed-b949-d39f989ad295" alt="video-emulador-chip8" height="400">
 </div>
 
 ### Menu seletor de jogos
 Use **W/S** ou **UP/DOWN** para selecionar um jogo, e **ENTER** para confirmar.
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/0fcfe73b-0f80-44ed-a421-32e49222cdc9" alt="menu emulador" height="500">
+  <img src="https://github.com/user-attachments/assets/0fcfe73b-0f80-44ed-a421-32e49222cdc9" alt="menu emulador" height="400">
 </div>
 
 ## Chip-8
