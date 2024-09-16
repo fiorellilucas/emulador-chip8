@@ -59,10 +59,10 @@ int wWinMain() {
                 }
 
                 if (event.type == sf::Event::KeyPressed) {
-                    if (event.key.code == sf::Keyboard::W) {
+                    if ((event.key.code == sf::Keyboard::W) || (event.key.code == sf::Keyboard::Up)) {
                         emulator.game_hovered > 0 ? emulator.game_hovered -= 1 : NULL;
                     }
-                    else if (event.key.code == sf::Keyboard::S) {
+                    else if ((event.key.code == sf::Keyboard::S) || (event.key.code == sf::Keyboard::Down)) {
                         emulator.game_hovered < (emulator.num_games_installed() - 1) ? emulator.game_hovered += 1 : NULL;
                     }
                     else if (event.key.code == sf::Keyboard::Enter) {
