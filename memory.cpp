@@ -18,6 +18,8 @@ bool Memory::load_game(std::filesystem::directory_entry game_rom) {
             file.read(reinterpret_cast<char*>(&memory[PROGRAM_START_ADDRESS + i]), 1);
         }
     }
+
+    file.close();
     
     return true;
 }

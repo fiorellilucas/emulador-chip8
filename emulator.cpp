@@ -108,31 +108,32 @@ void Emulator::list_games() {
     uint16_t line_pos_x = 20;
     uint16_t line_pos_y = 100;
 
-    if (!games_entries_.empty()) {
-        uint16_t page_start = (game_hovered / GAMES_PER_PAGE_) * GAMES_PER_PAGE_;
-
-        for (uint16_t i = page_start; i < (page_start + GAMES_PER_PAGE_); i++) {
-            if (i >= num_games_installed()) {
-                break;
-            }
-
-            if (i == game_hovered) {
-                text_.setFillColor(sf::Color::Cyan);
-            }
-            else {
-                text_.setFillColor(sf::Color::White);
-            }
-            text_.setString(sf::String(games_entries_[i].path().stem()));
-            text_.setPosition(sf::Vector2f(line_pos_x, line_pos_y));
-            window->draw(text_);
-
-            line_pos_y += 50;
-        }
-    }
-    else {
+    if (games_entries_.empty()) {
         text_.setString("No roms available");
         text_.setPosition(sf::Vector2f(line_pos_x, line_pos_y));
         window->draw(text_);
+
+        return;
+    }
+
+    uint16_t page_start = (game_hovered / GAMES_PER_PAGE_) * GAMES_PER_PAGE_;
+    for (uint16_t i = page_start; i < (page_start + GAMES_PER_PAGE_); i++) {
+        if (i >= num_games_installed()) {
+            break;
+        }
+
+        if (i == game_hovered) {
+            text_.setFillColor(sf::Color::Cyan);
+        }
+        else {
+            text_.setFillColor(sf::Color::White);
+        }
+
+        text_.setString(sf::String(games_entries_[i].path().stem()));
+        text_.setPosition(sf::Vector2f(line_pos_x, line_pos_y));
+        window->draw(text_);
+
+        line_pos_y += 50;
     }
 }
 

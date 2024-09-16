@@ -23,6 +23,8 @@ int wWinMain() {
         }
 
         if (emulator.game_is_loaded) {
+            // EMULATION CYCLE
+
             emulator.opcode = emulator.mem->fetch_opcode(emulator.cpu->pc);
             uint16_t key_pressed = emulator.decode_key_pressed();
 
@@ -45,6 +47,8 @@ int wWinMain() {
             }
         }
         else {
+            // GAME SELECTION        
+    
             emulator.window->clear();
             emulator.list_games();
             emulator.window->display();
