@@ -18,13 +18,11 @@ public:
     void execute_opcode(uint16_t& opcode, Memory& mem, GPU& gpu, sf::RenderWindow& window, uint16_t& key_pressed);
 
 private:
-    uint8_t gp_regs[16] = { 0 };
-    uint16_t index_reg = 0;
-    uint16_t sp;
-
-    std::stack<uint16_t> stack;
-
-    bool increment_pc_flag = true;
+    uint8_t gp_regs_[16] = { 0 };
+    uint16_t index_reg_ = 0;
+    uint16_t sp_;
+    std::stack<uint16_t> stack_;
+    bool increment_pc_flag_ = true;
 
     void increment_pc();
 
