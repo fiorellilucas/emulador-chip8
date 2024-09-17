@@ -6,7 +6,23 @@ CPU::CPU() {}
 
 CPU::~CPU() {}
 
-void CPU::increment_pc() {
+uint16_t CPU::get_delay() {
+    return delay_reg_;
+}
+
+uint16_t CPU::get_sound() {
+    return sound_reg_;
+}
+
+void CPU::decrement_delay() {
+    delay_reg_--;
+}
+
+void CPU::decrement_sound() {
+    sound_reg_--;
+}
+
+void CPU::increment_pc_() {
     pc += 2;
 }
 
@@ -37,21 +53,21 @@ void CPU::execute_opcode(uint16_t& opcode, Memory& mem, GPU& gpu, sf::RenderWind
 
     case 0x3000: {
         if (gp_regs_[reg_num] == value) {
-            increment_pc();
+            increment_pc_();
         }
         break;
     }
 
     case 0x4000: {
         if (gp_regs_[reg_num] != value) {
-            increment_pc();
+            increment_pc_();
         }
         break;
     }
 
     case 0x5000: {
         if (gp_regs_[reg_num_x] == gp_regs_[reg_num_y]) {
-            increment_pc();
+            increment_pc_();
         }
         break;
     }
@@ -132,7 +148,7 @@ void CPU::execute_opcode(uint16_t& opcode, Memory& mem, GPU& gpu, sf::RenderWind
 
     case 0x9000: {
         if (gp_regs_[reg_num_x] != gp_regs_[reg_num_y]) {
-            increment_pc();
+            increment_pc_();
         }
         break;
     }
@@ -197,13 +213,13 @@ void CPU::execute_opcode(uint16_t& opcode, Memory& mem, GPU& gpu, sf::RenderWind
         switch (opcode_data & 0xFF) {
         case 0x9E: {
             if (key_pressed == gp_regs_[reg_num]) {
-                increment_pc();
+                increment_pc_();
             }
             break;
         }
         case 0xA1: {
             if (key_pressed != gp_regs_[reg_num]) {
-                increment_pc();
+                increment_pc_();
             }
             break;
         }
@@ -219,7 +235,7 @@ void CPU::execute_opcode(uint16_t& opcode, Memory& mem, GPU& gpu, sf::RenderWind
     case 0xF000: {
         switch (opcode_data & 0xFF) {
         case 0x07: {
-            gp_regs_[reg_num] = delay_reg;
+            gp_regs_[reg_num] = delay_reg_;
             break;
         }
         case 0x0A: {
@@ -238,11 +254,11 @@ void CPU::execute_opcode(uint16_t& opcode, Memory& mem, GPU& gpu, sf::RenderWind
             break;
         }
         case 0x15: {
-            delay_reg = gp_regs_[reg_num];
+            delay_reg_ = gp_regs_[reg_num];
             break;
         }
         case 0x18: {
-            sound_reg = gp_regs_[reg_num];
+            sound_reg_ = gp_regs_[reg_num];
             break;
         }
         case 0x1E: {
@@ -301,6 +317,6 @@ void CPU::execute_opcode(uint16_t& opcode, Memory& mem, GPU& gpu, sf::RenderWind
     }
 
     if (increment_pc_flag_) {
-        increment_pc();
+        increment_pc_();
     }
 }

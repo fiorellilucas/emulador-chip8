@@ -33,13 +33,13 @@ int wWinMain() {
 
             emulator.instructions_ran += 1;
             if (emulator.instructions_ran >= INSTRUCTIONS_PER_FRAME) {
-                if (emulator.cpu->delay_reg > 0) {
-                    emulator.cpu->delay_reg -= 1;
+                if (emulator.cpu->get_delay() > 0) {
+                    emulator.cpu->decrement_delay();
                 }
 
-                if (emulator.cpu->sound_reg > 0) {
+                if (emulator.cpu->get_sound() > 0) {
                     emulator.sound->play();
-                    emulator.cpu->sound_reg -= 1;
+                    emulator.cpu->decrement_sound();
                 }
 
                 emulator.instructions_ran = 0;
