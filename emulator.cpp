@@ -116,13 +116,13 @@ void Emulator::list_games() {
         return;
     }
 
-    uint16_t page_start = (game_hovered / GAMES_PER_PAGE_) * GAMES_PER_PAGE_;
+    uint16_t page_start = (cursor_position / GAMES_PER_PAGE_) * GAMES_PER_PAGE_;
     for (uint16_t i = page_start; i < (page_start + GAMES_PER_PAGE_); i++) {
         if (i >= num_games_installed()) {
             break;
         }
 
-        if (i == game_hovered) {
+        if (i == cursor_position) {
             text_.setFillColor(sf::Color::Cyan);
         }
         else {
@@ -138,7 +138,7 @@ void Emulator::list_games() {
 }
 
 std::filesystem::directory_entry Emulator::game_selected() {
-    return games_entries_[game_hovered];
+    return games_entries_[cursor_position];
 }
 
 void Emulator::reset_system() {

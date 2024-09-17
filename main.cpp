@@ -60,10 +60,10 @@ int wWinMain() {
 
                 if (event.type == sf::Event::KeyPressed) {
                     if ((event.key.code == sf::Keyboard::W) || (event.key.code == sf::Keyboard::Up)) {
-                        emulator.game_hovered > 0 ? emulator.game_hovered -= 1 : NULL;
+                        emulator.cursor_position > 0 ? emulator.cursor_position -= 1 : NULL;
                     }
                     else if ((event.key.code == sf::Keyboard::S) || (event.key.code == sf::Keyboard::Down)) {
-                        emulator.game_hovered < (emulator.num_games_installed() - 1) ? emulator.game_hovered += 1 : NULL;
+                        emulator.cursor_position < (emulator.num_games_installed() - 1) ? emulator.cursor_position += 1 : NULL;
                     }
                     else if (event.key.code == sf::Keyboard::Enter) {
                         emulator.game_is_loaded = emulator.mem->load_game(emulator.game_selected());
