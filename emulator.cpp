@@ -142,10 +142,6 @@ std::filesystem::directory_entry Emulator::game_selected() {
 }
 
 void Emulator::reset_system() {
-    cpu->~CPU();
-    mem->~Memory();
-    gpu->~GPU();
-
     cpu = std::make_unique<CPU>();
     mem = std::make_unique<Memory>();
     gpu = std::make_unique<GPU>();
