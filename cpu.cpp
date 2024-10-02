@@ -26,6 +26,10 @@ void CPU::increment_pc_() {
     pc += 2;
 }
 
+uint16_t CPU::fetch_opcode(Memory& mem) {
+    return (mem.memory[pc] << 8 | mem.memory[pc + 1]);
+}
+
 void CPU::execute_opcode(uint16_t& opcode, Memory& mem, GPU& gpu, sf::RenderWindow& window, uint16_t& key_pressed) {
     increment_pc_flag_ = true;
     uint16_t opcode_data = (opcode & 0xFFF);

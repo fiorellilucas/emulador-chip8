@@ -23,9 +23,8 @@ public:
     uint16_t decode_key_pressed();
     uint16_t num_games_installed();
     void list_games();
-    std::filesystem::directory_entry game_selected();
-    
     void reset_system();
+    std::filesystem::directory_entry game_selected();
 
 private:
     uint16_t GAMES_PER_PAGE_ = 10;

@@ -12,7 +12,6 @@ public:
     uint16_t memory[4096] = { 0 };
 
     bool load_game(std::filesystem::directory_entry game_rom);
-    uint16_t fetch_opcode(uint16_t& pc) const;
 
 private:
     uint16_t fontset_[80] = {

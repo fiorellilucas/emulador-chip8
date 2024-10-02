@@ -17,6 +17,8 @@ public:
     uint16_t get_sound();
     void decrement_delay();
     void decrement_sound();
+
+    uint16_t fetch_opcode(Memory& mem);
     void execute_opcode(uint16_t& opcode, Memory& mem, GPU& gpu, sf::RenderWindow& window, uint16_t& key_pressed);
 
 private:
