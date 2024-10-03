@@ -15,11 +15,14 @@ int wWinMain() {
             if (event.type == sf::Event::Closed) {
                 emulator.window->close();
             }
-        }
 
-        if (event.key.code == sf::Keyboard::Escape) {
-            emulator.game_is_loaded = false;
-            emulator.reset_system();
+            if (event.key.code == sf::Keyboard::Escape) {
+                emulator.quit_game();
+            }
+
+            if (event.key.code == sf::Keyboard::R) {
+                emulator.reload_game();
+            }
         }
 
         if (emulator.game_is_loaded) {

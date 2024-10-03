@@ -141,6 +141,16 @@ std::filesystem::directory_entry Emulator::game_selected() {
     return games_entries_[cursor_position];
 }
 
+void Emulator::quit_game() {
+    reset_system();
+    game_is_loaded = false;
+}
+
+void Emulator::reload_game() {
+    quit_game();
+    game_is_loaded = mem->load_game(game_selected());
+}
+
 void Emulator::reset_system() {
     cpu = std::make_unique<CPU>();
     mem = std::make_unique<Memory>();

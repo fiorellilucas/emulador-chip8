@@ -22,6 +22,8 @@ public:
     uint16_t decode_key_pressed();
     uint16_t num_games_installed();
     void list_games();
+    void quit_game();
+    void reload_game();
     void reset_system();
     std::filesystem::directory_entry game_selected();
 

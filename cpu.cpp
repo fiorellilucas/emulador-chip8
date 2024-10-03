@@ -23,6 +23,7 @@ void CPU::decrement_sound() {
 }
 
 void CPU::set_opcode_(uint16_t opcode) {
+    std::cout << std::hex << opcode << "\n";
     opcode_ = opcode;
 }
 
