@@ -18,8 +18,8 @@ public:
     void decrement_delay();
     void decrement_sound();
 
-    uint16_t fetch_opcode(Memory& mem);
-    void execute_opcode(uint16_t& opcode, Memory& mem, GPU& gpu, sf::RenderWindow& window, uint16_t& key_pressed);
+    void fetch_opcode(Memory& mem);
+    void execute_opcode(Memory& mem, GPU& gpu, sf::RenderWindow& window, uint16_t& key_pressed);
 
 private:
     uint8_t gp_regs_[16] = { 0 };
@@ -27,9 +27,11 @@ private:
     uint16_t delay_reg_ = 0;
     uint16_t sound_reg_ = 0;
     uint16_t sp_;
+    uint16_t opcode_ = 0x0;
     std::stack<uint16_t> stack_;
     bool increment_pc_flag_ = true;
 
     void increment_pc_();
+    void set_opcode_(uint16_t opcode);
 
 };

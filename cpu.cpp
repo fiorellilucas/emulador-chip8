@@ -22,17 +22,21 @@ void CPU::decrement_sound() {
     sound_reg_--;
 }
 
+void CPU::set_opcode_(uint16_t opcode) {
+    opcode_ = opcode;
+}
+
 void CPU::increment_pc_() {
     pc += 2;
 }
 
-uint16_t CPU::fetch_opcode(Memory& mem) {
-    return (mem.memory[pc] << 8 | mem.memory[pc + 1]);
+void CPU::fetch_opcode(Memory& mem) {
+    set_opcode_(mem.memory[pc] << 8 | mem.memory[pc + 1]);
 }
 
-void CPU::execute_opcode(uint16_t& opcode, Memory& mem, GPU& gpu, sf::RenderWindow& window, uint16_t& key_pressed) {
+void CPU::execute_opcode(Memory& mem, GPU& gpu, sf::RenderWindow& window, uint16_t& key_pressed) {
     increment_pc_flag_ = true;
-    uint16_t opcode_data = (opcode & 0xFFF);
+    uint16_t opcode_data = (opcode_ & 0xFFF);
 
     uint16_t reg_num = (opcode_data & 0xF00) >> 8;
     uint16_t reg_num_x = (opcode_data & 0xF00) >> 8;
@@ -40,7 +44,7 @@ void CPU::execute_opcode(uint16_t& opcode, Memory& mem, GPU& gpu, sf::RenderWind
 
     uint16_t value = (opcode_data & 0xFF);
 
-    switch (opcode & 0xF000) {
+    switch (opcode_ & 0xF000) {
     case 0x1000: {
         pc = opcode_data;
         increment_pc_flag_ = false;
@@ -143,7 +147,7 @@ void CPU::execute_opcode(uint16_t& opcode, Memory& mem, GPU& gpu, sf::RenderWind
             break;
         }
         default: {
-            std::cout << "opcode " << std::hex << std::showbase << opcode << " unknown\n";
+            std::cout << "opcode " << std::hex << std::showbase << opcode_ << " unknown\n";
             break;
         }
         }
@@ -229,7 +233,7 @@ void CPU::execute_opcode(uint16_t& opcode, Memory& mem, GPU& gpu, sf::RenderWind
         }
 
         default: {
-            std::cout << "opcode " << std::hex << std::showbase << opcode << " unknown\n";
+            std::cout << "opcode " << std::hex << std::showbase << opcode_ << " unknown\n";
             break;
         }
         }
@@ -294,7 +298,7 @@ void CPU::execute_opcode(uint16_t& opcode, Memory& mem, GPU& gpu, sf::RenderWind
             break;
         }
         default: {
-            std::cout << "opcode " << std::hex << std::showbase << opcode << " unknown\n";
+            std::cout << "opcode " << std::hex << std::showbase << opcode_ << " unknown\n";
             break;
         }
         }
@@ -302,7 +306,7 @@ void CPU::execute_opcode(uint16_t& opcode, Memory& mem, GPU& gpu, sf::RenderWind
     }
 
     default:
-        switch (opcode) {
+        switch (opcode_) {
         case 0xEE:
             pc = stack_.top();
             stack_.pop();
@@ -315,7 +319,7 @@ void CPU::execute_opcode(uint16_t& opcode, Memory& mem, GPU& gpu, sf::RenderWind
             }
             break;
         default:
-            std::cout << std::hex << std::showbase << "opcode " << opcode << " unknown\n";
+            std::cout << std::hex << std::showbase << "opcode " << opcode_ << " unknown\n";
             break;
         }
     }
