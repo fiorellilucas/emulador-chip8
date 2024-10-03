@@ -31,7 +31,7 @@ int wWinMain() {
             uint16_t key_pressed = emulator.decode_key_pressed();
 
             emulator.cpu->fetch_opcode(*emulator.mem);
-            emulator.cpu->execute_opcode(*emulator.mem, *emulator.gpu, *emulator.window, key_pressed);
+            emulator.cpu->decode_execute_opcode(*emulator.mem, *emulator.gpu, *emulator.window, key_pressed);
 
             emulator.gpu->render_frame_buffer(*emulator.window);
 
