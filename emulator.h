@@ -38,5 +38,6 @@ private:
     std::vector<std::filesystem::directory_entry> games_entries_;
 
     void draw_logo_();
+    void draw_control_glyphs_();
 
 };

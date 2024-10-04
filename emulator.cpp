@@ -35,6 +35,51 @@ Emulator::Emulator() {
 
 Emulator::~Emulator() {}
 
+void Emulator::draw_control_glyphs_() {
+    sf::Font glyph_font;
+    glyph_font.loadFromFile("./assets/glyphs.otf");
+
+    sf::Text glyph;
+    glyph.setFont(glyph_font);
+    glyph.setFillColor(sf::Color::White);
+    glyph.setCharacterSize(60);
+
+    glyph.setString("W");
+    glyph.setPosition(1000, 20);
+    window->draw(glyph);
+
+    glyph.setString("S");
+    glyph.setPosition(1000, 80);
+    window->draw(glyph);
+
+    glyph.setString("R");
+    glyph.setPosition(1000, 140);
+    window->draw(glyph);
+
+    glyph.setString("m");
+    glyph.setPosition(1000, 200);
+    window->draw(glyph);
+
+    glyph.setFont(font_);
+    glyph.setCharacterSize(22);
+
+    glyph.setString("GO UP");
+    glyph.setPosition(1060, 42);
+    window->draw(glyph);
+
+    glyph.setString("GO DOWN");
+    glyph.setPosition(1060, 102);
+    window->draw(glyph);
+
+    glyph.setString("RESET GAME");
+    glyph.setPosition(1060, 162);
+    window->draw(glyph);
+
+    glyph.setString("QUIT TO MENU");
+    glyph.setPosition(1060, 222);
+    window->draw(glyph);
+}
+
 uint16_t Emulator::decode_key_pressed() {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num0)) {
         return 0x0;
@@ -103,6 +148,7 @@ void Emulator::draw_logo_() {
 
 void Emulator::list_games() {
     draw_logo_();
+    draw_control_glyphs_();
 
     text_.setCharacterSize(28);
     uint16_t line_pos_x = 20;
