@@ -210,3 +210,26 @@ void Emulator::reset_system() {
     mem = std::make_unique<Memory>();
     gpu = std::make_unique<GPU>();
 }
+
+void Emulator::error_message(std::runtime_error exception) {
+    sf::RenderWindow err_window(sf::VideoMode(320, 150), "Runtime error");
+
+    sf::Text text;
+    text.setFont(font_);
+    text.setCharacterSize(26);
+    text.setPosition(10, 30);
+    text.setString(exception.what());
+
+    err_window.clear();
+    err_window.draw(text);
+    err_window.display();
+
+    while (err_window.isOpen()) {
+        sf::Event err_event;
+        while (err_window.pollEvent(err_event)) {
+            if (err_event.type == sf::Event::Closed)
+                err_window.close();
+            quit_game();
+        }
+    }
+}

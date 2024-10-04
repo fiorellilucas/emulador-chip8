@@ -41,30 +41,8 @@ int wWinMain() {
             try {
                 emulator.cpu->decode_execute_opcode(*emulator.mem, *emulator.gpu, *emulator.window, key_pressed);
             }
-            catch (std::runtime_error exp) {
-                sf::RenderWindow err_window(sf::VideoMode(320, 150), "Runtime error");
-
-                sf::Font font;
-                font.loadFromFile("./assets/font.ttf");
-
-                sf::Text text;
-                text.setFont(font);
-                text.setCharacterSize(26);
-                text.setPosition(10, 30);
-                text.setString(exp.what());
-                
-                err_window.clear();
-                err_window.draw(text);
-                err_window.display();
-
-                while (err_window.isOpen()) {
-                    sf::Event err_event;
-                    while (err_window.pollEvent(err_event)) {
-                        if (err_event.type == sf::Event::Closed)
-                            err_window.close();
-                            emulator.quit_game();
-                    }
-                }
+            catch (std::runtime_error exception) {
+                emulator.error_message(exception);
             }
 
             emulator.gpu->render_frame_buffer(*emulator.window);
