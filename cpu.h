@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stack>
 #include <random>
+#include <exception>
 #include <SFML/Graphics.hpp>
 
 class GPU;

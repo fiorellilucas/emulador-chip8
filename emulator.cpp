@@ -17,7 +17,7 @@ Emulator::Emulator() {
     sound->setBuffer(buffer_);
     sound->setVolume(30);
 
-    font_.loadFromFile("./assets/VT323-Regular.ttf");
+    font_.loadFromFile("./assets/font.ttf");
     text_.setFont(font_);
     text_.setFillColor(sf::Color::White);
 
@@ -95,8 +95,8 @@ uint16_t Emulator::num_games_installed() {
 
 void Emulator::draw_logo_() {
     text_.setFillColor(sf::Color::White);
-    text_.setCharacterSize(80);
-    text_.setPosition(20, 0);
+    text_.setCharacterSize(54);
+    text_.setPosition(20, 20);
     text_.setString("Chip-8 emulator");
     window->draw(text_);
 }
@@ -104,7 +104,7 @@ void Emulator::draw_logo_() {
 void Emulator::list_games() {
     draw_logo_();
 
-    text_.setCharacterSize(32);
+    text_.setCharacterSize(28);
     uint16_t line_pos_x = 20;
     uint16_t line_pos_y = 110;
 

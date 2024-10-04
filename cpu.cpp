@@ -348,7 +348,7 @@ void CPU::decode_execute_opcode(Memory& mem, GPU& gpu, sf::RenderWindow& window,
             break;
         }
         default: {
-            std::cout << "opcode " << std::hex << std::showbase << opcode_ << " unknown\n";
+            throw std::runtime_error("Unknown opcode: " + (std::stringstream{} << std::hex << std::showbase << opcode_).str());
             break;
         }
         }
@@ -392,7 +392,7 @@ void CPU::decode_execute_opcode(Memory& mem, GPU& gpu, sf::RenderWindow& window,
         }
 
         default: {
-            std::cout << "opcode " << std::hex << std::showbase << opcode_ << " unknown\n";
+            throw std::runtime_error("Unknown opcode: " + (std::stringstream{} << std::hex << std::showbase << opcode_).str());
             break;
         }
         }
@@ -438,7 +438,7 @@ void CPU::decode_execute_opcode(Memory& mem, GPU& gpu, sf::RenderWindow& window,
             break;
         }
         default: {
-            std::cout << "opcode " << std::hex << std::showbase << opcode_ << " unknown\n";
+            throw std::runtime_error("Unknown opcode: " + (std::stringstream{} << std::hex << std::showbase << opcode_ ).str());
             break;
         }
         }
@@ -454,7 +454,7 @@ void CPU::decode_execute_opcode(Memory& mem, GPU& gpu, sf::RenderWindow& window,
             op_00E0(gpu);
             break;
         default:
-            std::cout << std::hex << std::showbase << "opcode " << opcode_ << " unknown\n";
+            throw std::runtime_error("Unknown opcode: " + (std::stringstream{} << std::hex << std::showbase << opcode_).str());
             break;
         }
     }

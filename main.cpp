@@ -18,16 +18,17 @@ int wWinMain() {
                 break;
 
             case sf::Event::KeyReleased:
-            if (event.key.code == sf::Keyboard::Escape) {
-                emulator.quit_game();
-            }
+                if (event.key.code == sf::Keyboard::Escape) {
+                    emulator.quit_game();
+                }
+                if (event.key.code == sf::Keyboard::R) {
+                    emulator.reload_game();
+                }
+                break;
 
-            if (event.key.code == sf::Keyboard::R) {
-                emulator.reload_game();
-            }
             default:
                 break;
-        }
+            }
         }
 
         if (emulator.game_is_loaded) {
@@ -36,7 +37,35 @@ int wWinMain() {
             uint16_t key_pressed = emulator.decode_key_pressed();
 
             emulator.cpu->fetch_opcode(*emulator.mem);
-            emulator.cpu->decode_execute_opcode(*emulator.mem, *emulator.gpu, *emulator.window, key_pressed);
+
+            try {
+                emulator.cpu->decode_execute_opcode(*emulator.mem, *emulator.gpu, *emulator.window, key_pressed);
+            }
+            catch (std::runtime_error exp) {
+                sf::RenderWindow err_window(sf::VideoMode(320, 150), "Runtime error");
+
+                sf::Font font;
+                font.loadFromFile("./assets/font.ttf");
+
+                sf::Text text;
+                text.setFont(font);
+                text.setCharacterSize(26);
+                text.setPosition(10, 30);
+                text.setString(exp.what());
+                
+                err_window.clear();
+                err_window.draw(text);
+                err_window.display();
+
+                while (err_window.isOpen()) {
+                    sf::Event err_event;
+                    while (err_window.pollEvent(err_event)) {
+                        if (err_event.type == sf::Event::Closed)
+                            err_window.close();
+                            emulator.quit_game();
+                    }
+                }
+            }
 
             emulator.gpu->render_frame_buffer(*emulator.window);
 
@@ -57,7 +86,7 @@ int wWinMain() {
         }
         else {
             // GAME SELECTION        
-    
+
             emulator.window->clear();
             emulator.list_games();
             emulator.window->display();
@@ -79,6 +108,7 @@ int wWinMain() {
                         emulator.game_is_loaded = emulator.mem->load_game(emulator.game_selected());
                     }
                     break;
+
                 default:
                     break;
                 }
