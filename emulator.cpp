@@ -56,8 +56,12 @@ void Emulator::draw_control_glyphs_() {
     glyph.setPosition(1000, 140);
     window->draw(glyph);
 
-    glyph.setString("m");
+    glyph.setString("a");
     glyph.setPosition(1000, 200);
+    window->draw(glyph);
+
+    glyph.setString("m");
+    glyph.setPosition(1000, 260);
     window->draw(glyph);
 
     glyph.setFont(font_);
@@ -75,8 +79,12 @@ void Emulator::draw_control_glyphs_() {
     glyph.setPosition(1060, 162);
     window->draw(glyph);
 
+    glyph.setString("SELECT GAME");
+    glyph.setPosition(1080, 222);
+    window->draw(glyph);
+
     glyph.setString("QUIT TO MENU");
-    glyph.setPosition(1060, 222);
+    glyph.setPosition(1060, 282);
     window->draw(glyph);
 }
 
