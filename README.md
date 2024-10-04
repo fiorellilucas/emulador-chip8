@@ -8,7 +8,7 @@ Um simples emulador da plataforma Chip8 feito em C++, utlizando a biblioteca SFM
 ### Menu seletor de jogos
 Use **W/S** ou **UP/DOWN** para selecionar um jogo, e **ENTER** para confirmar.
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/0fcfe73b-0f80-44ed-a421-32e49222cdc9" alt="menu emulador" height="400">
+  <img src="https://github.com/user-attachments/assets/55e66c4c-18c6-4849-bda1-dc7ee02b3e3c" alt="menu emulador" height="400">
 </div>
 
 ## Chip-8
