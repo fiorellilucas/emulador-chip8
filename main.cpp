@@ -12,10 +12,12 @@ int wWinMain() {
     while (emulator.window->isOpen()) {
         sf::Event event;
         while (emulator.window->pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
+            switch (event.type) {
+            case sf::Event::Closed:
                 emulator.window->close();
-            }
+                break;
 
+            case sf::Event::KeyReleased:
             if (event.key.code == sf::Keyboard::Escape) {
                 emulator.quit_game();
             }
@@ -23,6 +25,9 @@ int wWinMain() {
             if (event.key.code == sf::Keyboard::R) {
                 emulator.reload_game();
             }
+            default:
+                break;
+        }
         }
 
         if (emulator.game_is_loaded) {
@@ -58,11 +63,12 @@ int wWinMain() {
             emulator.window->display();
 
             while (emulator.window->pollEvent(event)) {
-                if (event.type == sf::Event::Closed) {
+                switch (event.type) {
+                case sf::Event::Closed:
                     emulator.window->close();
-                }
+                    break;
 
-                if (event.type == sf::Event::KeyPressed) {
+                case sf::Event::KeyPressed:
                     if ((event.key.code == sf::Keyboard::W) || (event.key.code == sf::Keyboard::Up)) {
                         emulator.cursor_position > 0 ? emulator.cursor_position -= 1 : NULL;
                     }
@@ -72,6 +78,9 @@ int wWinMain() {
                     else if (event.key.code == sf::Keyboard::Enter) {
                         emulator.game_is_loaded = emulator.mem->load_game(emulator.game_selected());
                     }
+                    break;
+                default:
+                    break;
                 }
             }
         }
