@@ -11,7 +11,7 @@ Emulator::Emulator() {
     SDL_Init(SDL_INIT_EVERYTHING);
     window = SDL_CreateWindow("Chip-8 emulator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 640, SDL_WINDOW_SHOWN);
 
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (!renderer) {
         std::cout << SDL_GetError() << std::endl;
     }
@@ -25,28 +25,7 @@ Emulator::Emulator() {
         std::cout << TTF_GetError() << std::endl;
     }
 
-    SDL_Color white = {255, 255, 255};
-
-    text_surface_ = TTF_RenderText_Solid(font_, "Hello SDL2", white);
-    if (!text_surface_) {
-        std::cout << TTF_GetError() << std::endl;
-    }
-
-    SDL_Texture* text_texture = SDL_CreateTextureFromSurface(renderer, text_surface_);
-    if (!text_texture) {
-        std::cout << SDL_GetError() << std::endl;
-    }
-    SDL_FreeSurface(text_surface_);
-
-    SDL_Rect text_rect = { 0, 0, 0, 0 };
-    SDL_QueryTexture(text_texture, NULL, NULL, &text_rect.w, &text_rect.h);
-
-    SDL_RenderCopy(renderer, text_texture, NULL, &text_rect);
-    SDL_RenderPresent(renderer);
-
-    SDL_DestroyTexture(text_texture);
-
-
+    draw_logo_();
     // fills the game_entries_ vector with all the roms (std::filesystem::directory_entry's)
     //if (!std::filesystem::is_empty(games_path_)) {
     //    for (auto const& rom : std::filesystem::directory_iterator{ games_path_ })
@@ -177,13 +156,28 @@ uint16_t Emulator::num_games_installed() {
     return games_entries_.size();
 }
 
-//void Emulator::draw_logo_() {
-//    text_.setFillColor(sf::Color::White);
-//    text_.setCharacterSize(54);
-//    text_.setPosition(20, 20);
-//    text_.setString("Chip-8 emulator");
-//    window->draw(text_);
-//}
+void Emulator::draw_logo_() {
+    SDL_Color white = { 255, 255, 255 };
+
+    text_surface_ = TTF_RenderText_Solid(font_, "Chip-8 Emulator", white);
+    if (!text_surface_) {
+        std::cout << TTF_GetError() << std::endl;
+    }
+
+    SDL_Texture* text_texture = SDL_CreateTextureFromSurface(renderer, text_surface_);
+    if (!text_texture) {
+        std::cout << SDL_GetError() << std::endl;
+    }
+    SDL_FreeSurface(text_surface_);
+
+    SDL_Rect text_rect = { 20, 20, 0, 0 };
+    SDL_QueryTexture(text_texture, NULL, NULL, &text_rect.w, &text_rect.h);
+
+    SDL_RenderCopy(renderer, text_texture, NULL, &text_rect);
+    SDL_RenderPresent(renderer);
+
+    SDL_DestroyTexture(text_texture);
+}
 
 //void Emulator::list_games() {
 //    //draw_logo_();

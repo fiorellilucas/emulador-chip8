@@ -13,6 +13,7 @@ public:
     //std::unique_ptr<Memory> mem;
     //std::unique_ptr<GPU> gpu;
     SDL_Window* window;
+    SDL_Renderer* renderer;
     //std::unique_ptr<sf::RenderWindow> window; 
     //std::unique_ptr<sf::Sound> sound;
 
@@ -40,7 +41,7 @@ private:
     std::filesystem::path games_path_ = "./roms";
     std::vector<std::filesystem::directory_entry> games_entries_;
 
-    //void draw_logo_();
+    void draw_logo_();
     //void draw_control_glyphs_();
 
 };
