@@ -25,70 +25,23 @@ Emulator::Emulator() {
         std::cout << TTF_GetError() << std::endl;
     }
 
-    draw_logo_();
+    keycap_font_ = TTF_OpenFont("./assets/glyphs.otf", 60);
+    if (!keycap_font_) {
+        std::cout << TTF_GetError() << std::endl;
+    }
+
     // fills the game_entries_ vector with all the roms (std::filesystem::directory_entry's)
-    //if (!std::filesystem::is_empty(games_path_)) {
-    //    for (auto const& rom : std::filesystem::directory_iterator{ games_path_ })
-    //        if (rom.path().extension() == ".ch8") {
-    //            games_entries_.push_back(rom);
-    //        }
-    //}
+    if (!std::filesystem::is_empty(games_path_)) {
+        for (auto const& rom : std::filesystem::directory_iterator{ games_path_ })
+            if (rom.path().extension() == ".ch8") {
+                games_entries_.push_back(rom);
+            }
+    }
+
+    list_games();
 }
 
 Emulator::~Emulator() {}
-
-//void Emulator::draw_control_glyphs_() {
-//    sf::Font glyph_font;
-//    glyph_font.loadFromFile("./assets/glyphs.otf");
-//
-//    sf::Text glyph;
-//    glyph.setFont(glyph_font);
-//    glyph.setFillColor(sf::Color::White);
-//    glyph.setCharacterSize(60);
-//
-//    glyph.setString("W");
-//    glyph.setPosition(1000, 20);
-//    window->draw(glyph);
-//
-//    glyph.setString("S");
-//    glyph.setPosition(1000, 80);
-//    window->draw(glyph);
-//
-//    glyph.setString("R");
-//    glyph.setPosition(1000, 140);
-//    window->draw(glyph);
-//
-//    glyph.setString("a");
-//    glyph.setPosition(1000, 200);
-//    window->draw(glyph);
-//
-//    glyph.setString("m");
-//    glyph.setPosition(1000, 260);
-//    window->draw(glyph);
-//
-//    glyph.setFont(font_);
-//    glyph.setCharacterSize(22);
-//
-//    glyph.setString("GO UP");
-//    glyph.setPosition(1060, 42);
-//    window->draw(glyph);
-//
-//    glyph.setString("GO DOWN");
-//    glyph.setPosition(1060, 102);
-//    window->draw(glyph);
-//
-//    glyph.setString("RESET GAME");
-//    glyph.setPosition(1060, 162);
-//    window->draw(glyph);
-//
-//    glyph.setString("SELECT GAME");
-//    glyph.setPosition(1080, 222);
-//    window->draw(glyph);
-//
-//    glyph.setString("QUIT TO MENU");
-//    glyph.setPosition(1060, 282);
-//    window->draw(glyph);
-//}
 
 uint16_t Emulator::decode_key_pressed() {
     SDL_Event event;
@@ -157,64 +110,130 @@ uint16_t Emulator::num_games_installed() {
 }
 
 void Emulator::draw_logo_() {
-    SDL_Color white = { 255, 255, 255 };
-
-    text_surface_ = TTF_RenderText_Solid(font_, "Chip-8 Emulator", white);
-    if (!text_surface_) {
+    SDL_Surface* logo_surface = TTF_RenderText_Solid(font_, "Chip-8 Emulator", SDL_Color{255, 255, 255});
+    if (!logo_surface) {
         std::cout << TTF_GetError() << std::endl;
     }
 
-    SDL_Texture* text_texture = SDL_CreateTextureFromSurface(renderer, text_surface_);
-    if (!text_texture) {
+    SDL_Texture* logo_texture = SDL_CreateTextureFromSurface(renderer, logo_surface);
+    if (!logo_texture) {
         std::cout << SDL_GetError() << std::endl;
     }
-    SDL_FreeSurface(text_surface_);
+    SDL_FreeSurface(logo_surface);
 
-    SDL_Rect text_rect = { 20, 20, 0, 0 };
-    SDL_QueryTexture(text_texture, NULL, NULL, &text_rect.w, &text_rect.h);
+    SDL_Rect logo_rect = { 20, 20, 0, 0 };
+    SDL_QueryTexture(logo_texture, NULL, NULL, &logo_rect.w, &logo_rect.h);
 
-    SDL_RenderCopy(renderer, text_texture, NULL, &text_rect);
-    SDL_RenderPresent(renderer);
+    SDL_RenderCopy(renderer, logo_texture, NULL, &logo_rect);
 
-    SDL_DestroyTexture(text_texture);
+    SDL_DestroyTexture(logo_texture);
 }
 
-//void Emulator::list_games() {
-//    //draw_logo_();
-//    //draw_control_glyphs_();
-//
-//    text_.setCharacterSize(28);
-//    uint16_t line_pos_x = 20;
-//    uint16_t line_pos_y = 110;
-//
-//    if (games_entries_.empty()) {
-//        text_.setString("No roms available");
-//        text_.setPosition(sf::Vector2f(line_pos_x, line_pos_y));
-//        window->draw(text_);
-//
-//        return;
-//    }
-//
-//    uint16_t page_start = (cursor_position / GAMES_PER_PAGE_) * GAMES_PER_PAGE_;
-//    for (uint16_t i = page_start; i < (page_start + GAMES_PER_PAGE_); i++) {
-//        if (i >= num_games_installed()) {
-//            break;
-//        }
-//
-//        if (i == cursor_position) {
-//            text_.setFillColor(sf::Color::Cyan);
-//        }
-//        else {
-//            text_.setFillColor(sf::Color::White);
-//        }
-//
-//        text_.setString(sf::String(games_entries_[i].path().stem()));
-//        text_.setPosition(sf::Vector2f(line_pos_x, line_pos_y));
-//        window->draw(text_);
-//
-//        line_pos_y += 50;
-//    }
-//}
+void Emulator::draw_single_control_legend_(const char* keycap_text, const char* legend_text, int pos_x, int pos_y) {
+    SDL_Surface* keycap_surface = TTF_RenderText_Solid(keycap_font_, keycap_text, SDL_Color{ 255, 255, 255 });
+    if (!keycap_surface) {
+        std::cout << TTF_GetError() << std::endl;
+    }
+
+    SDL_Texture* keycap_texture = SDL_CreateTextureFromSurface(renderer, keycap_surface);
+    if (!keycap_texture) {
+        std::cout << SDL_GetError() << std::endl;
+    }
+    SDL_FreeSurface(keycap_surface);
+
+    SDL_Rect keycap_rect = { pos_x, pos_y, 0, 0 };
+    SDL_QueryTexture(keycap_texture, NULL, NULL, &keycap_rect.w, &keycap_rect.h);
+    SDL_RenderCopy(renderer, keycap_texture, NULL, &keycap_rect);
+    SDL_DestroyTexture(keycap_texture);
+
+    TTF_SetFontSize(font_, 22);
+    SDL_Surface* legend_surface = TTF_RenderText_Solid(font_, legend_text, SDL_Color{ 255, 255, 255 });
+    if (!legend_surface) {
+        std::cout << TTF_GetError() << std::endl;
+    }
+
+    SDL_Texture* legend_texture = SDL_CreateTextureFromSurface(renderer, legend_surface);
+    if (!legend_texture) {
+        std::cout << SDL_GetError() << std::endl;
+    }
+    SDL_FreeSurface(legend_surface);
+
+    SDL_Rect legend_rect = { (keycap_rect.x + keycap_rect.w + 20), (keycap_rect.y + keycap_rect.h / 4), 0, 0 };
+    SDL_QueryTexture(legend_texture, NULL, NULL, &legend_rect.w, &legend_rect.h);
+    SDL_RenderCopy(renderer, legend_texture, NULL, &legend_rect);
+    SDL_DestroyTexture(legend_texture);
+}
+
+void Emulator::draw_controls_legend_() {
+    draw_single_control_legend_("W", "GO UP", 1000, 20);
+    draw_single_control_legend_("S", "GO DOWN", 1000, 80);
+    draw_single_control_legend_("R", "RESET GAME", 1000, 140);
+    draw_single_control_legend_("a", "SELECT GAME", 1000, 200);
+    draw_single_control_legend_("m", "QUIT TO MENU", 1000, 260);
+}
+
+void Emulator::list_games() {
+    draw_logo_();
+    draw_controls_legend_();
+
+    TTF_SetFontSize(font_, 28);
+    uint16_t line_pos_x = 20;
+    uint16_t line_pos_y = 110;
+
+    SDL_Surface* game_name_surface;
+
+    if (games_entries_.empty()) {
+        game_name_surface = TTF_RenderUTF8_Solid(font_, "No roms available", SDL_Color{255, 255, 255});
+
+        SDL_Texture* game_name_texture = SDL_CreateTextureFromSurface(renderer, game_name_surface);
+        if (!game_name_texture) {
+            std::cout << SDL_GetError() << std::endl;
+        }
+        SDL_FreeSurface(game_name_surface);
+
+        SDL_Rect game_name_rect = {line_pos_x, line_pos_y, 0, 0};
+        SDL_QueryTexture(game_name_texture, NULL, NULL, &game_name_rect.w, &game_name_rect.h);
+
+        SDL_RenderCopy(renderer, game_name_texture, NULL, &game_name_rect);
+        SDL_RenderPresent(renderer);
+
+        SDL_DestroyTexture(game_name_texture);
+        return;
+    }
+
+    uint16_t page_start = (cursor_position / GAMES_PER_PAGE_) * GAMES_PER_PAGE_;
+    for (uint16_t i = page_start; i < (page_start + GAMES_PER_PAGE_); i++) {
+        if (i >= num_games_installed()) {
+            break;
+        }
+
+        if (i == cursor_position) {
+            game_name_surface = TTF_RenderUTF8_Solid(font_, games_entries_[i].path().stem().string().c_str(), SDL_Color(0, 255, 255));
+        }
+        else {
+            game_name_surface = TTF_RenderUTF8_Solid(font_, games_entries_[i].path().stem().string().c_str(), SDL_Color(255, 255, 255));
+        }
+        if (!game_name_surface) {
+            std::cout << TTF_GetError() << std::endl;
+        }
+
+        SDL_Texture* game_name_texture = SDL_CreateTextureFromSurface(renderer, game_name_surface);
+        if (!game_name_texture) {
+            std::cout << SDL_GetError() << std::endl;
+        }
+        SDL_FreeSurface(game_name_surface);
+
+        SDL_Rect game_name_rect = { line_pos_x, line_pos_y, 0, 0 };
+        SDL_QueryTexture(game_name_texture, NULL, NULL, &game_name_rect.w, &game_name_rect.h);
+
+        SDL_RenderCopy(renderer, game_name_texture, NULL, &game_name_rect);
+
+        SDL_DestroyTexture(game_name_texture);
+
+        line_pos_y += 50;
+    }
+    SDL_RenderPresent(renderer);
+}
 
 std::filesystem::directory_entry Emulator::game_selected() {
     return games_entries_[cursor_position];
