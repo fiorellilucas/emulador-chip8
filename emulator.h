@@ -21,8 +21,9 @@ public:
     bool running = true;
     uint16_t instructions_ran = 0;
     uint16_t cursor_position = 0;
+    uint16_t key_pressed = 0x0;
 
-    uint16_t decode_key_pressed();
+    uint16_t decode_key_pressed(SDL_Event event);
     uint16_t num_games_installed();
     void list_games();
     //void quit_game();

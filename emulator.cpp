@@ -15,7 +15,7 @@ Emulator::Emulator() {
     if (!renderer) {
         std::cout << SDL_GetError() << std::endl;
     }
- 
+
     if (TTF_Init() == -1) {
         std::cout << TTF_GetError() << std::endl;
     }
@@ -43,65 +43,59 @@ Emulator::Emulator() {
 
 Emulator::~Emulator() {}
 
-uint16_t Emulator::decode_key_pressed() {
-    SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-        case SDL_KEYDOWN:
-            switch (event.key.keysym.sym) {
-            case SDLK_0:
-                return 0x0;
-                break;
-            case SDLK_1:
-                return 0x1;
-                break;
-            case SDLK_2:
-                return 0x2;
-                break;
-            case SDLK_3:
-                return 0x3;
-                break;
-            case SDLK_4:
-                return 0x4;
-                break;
-            case SDLK_5:
-                return 0x5;
-                break;
-            case SDLK_6:
-                return 0x6;
-                break;
-            case SDLK_7:
-                return 0x7;
-                break;
-            case SDLK_8:
-                return 0x8;
-                break;
-            case SDLK_9:
-                return 0x9;
-                break;
-            case SDLK_a:
-                return 0xA;
-                break;
-            case SDLK_b:
-                return 0xB;
-                break;
-            case SDLK_c:
-                return 0xC;
-                break;
-            case SDLK_d:
-                return 0xD;
-                break;
-            case SDLK_e:
-                return 0xE;
-                break;
-            case SDLK_f:
-                return 0xF;
-                break;
-            default:
-                return NULL;
-                break;
-            }
-        }
+uint16_t Emulator::decode_key_pressed(SDL_Event event) {
+    switch (event.key.keysym.sym) {
+    case SDLK_0:
+        return 0x0;
+        break;
+    case SDLK_1:
+        return 0x1;
+        break;
+    case SDLK_2:
+        return 0x2;
+        break;
+    case SDLK_3:
+        return 0x3;
+        break;
+    case SDLK_4:
+        return 0x4;
+        break;
+    case SDLK_5:
+        return 0x5;
+        break;
+    case SDLK_6:
+        return 0x6;
+        break;
+    case SDLK_7:
+        return 0x7;
+        break;
+    case SDLK_8:
+        return 0x8;
+        break;
+    case SDLK_9:
+        return 0x9;
+        break;
+    case SDLK_a:
+        return 0xA;
+        break;
+    case SDLK_b:
+        return 0xB;
+        break;
+    case SDLK_c:
+        return 0xC;
+        break;
+    case SDLK_d:
+        return 0xD;
+        break;
+    case SDLK_e:
+        return 0xE;
+        break;
+    case SDLK_f:
+        return 0xF;
+        break;
+    default:
+        return NULL;
+        break;
     }
 }
 
@@ -110,7 +104,9 @@ uint16_t Emulator::num_games_installed() {
 }
 
 void Emulator::draw_logo_() {
-    SDL_Surface* logo_surface = TTF_RenderText_Solid(font_, "Chip-8 Emulator", SDL_Color{255, 255, 255});
+    TTF_SetFontSize(font_, 60);
+
+    SDL_Surface* logo_surface = TTF_RenderText_Solid(font_, "Chip-8 Emulator", SDL_Color{ 255, 255, 255 });
     if (!logo_surface) {
         std::cout << TTF_GetError() << std::endl;
     }
@@ -173,6 +169,8 @@ void Emulator::draw_controls_legend_() {
 }
 
 void Emulator::list_games() {
+    SDL_RenderClear(renderer);
+
     draw_logo_();
     draw_controls_legend_();
 
@@ -183,7 +181,7 @@ void Emulator::list_games() {
     SDL_Surface* game_name_surface;
 
     if (games_entries_.empty()) {
-        game_name_surface = TTF_RenderUTF8_Solid(font_, "No roms available", SDL_Color{255, 255, 255});
+        game_name_surface = TTF_RenderUTF8_Solid(font_, "No roms available", SDL_Color{ 255, 255, 255 });
 
         SDL_Texture* game_name_texture = SDL_CreateTextureFromSurface(renderer, game_name_surface);
         if (!game_name_texture) {
@@ -191,7 +189,7 @@ void Emulator::list_games() {
         }
         SDL_FreeSurface(game_name_surface);
 
-        SDL_Rect game_name_rect = {line_pos_x, line_pos_y, 0, 0};
+        SDL_Rect game_name_rect = { line_pos_x, line_pos_y, 0, 0 };
         SDL_QueryTexture(game_name_texture, NULL, NULL, &game_name_rect.w, &game_name_rect.h);
 
         SDL_RenderCopy(renderer, game_name_texture, NULL, &game_name_rect);
