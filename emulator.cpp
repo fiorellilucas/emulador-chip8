@@ -250,6 +250,7 @@ std::filesystem::directory_entry Emulator::game_selected() {
 }
 
 void Emulator::quit_game() {
+    Mix_HaltChannel(-1);
     reset_system();
     game_is_loaded = false;
 }

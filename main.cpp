@@ -75,9 +75,8 @@ int main(int argc, char** args) {
                 }
 
                 if (emulator.cpu->get_sound() > 0) {
-                    std::cout << emulator.cpu->get_sound() << std::endl;
                     if (!Mix_Playing(1)) {
-                        Mix_PlayChannel(1, emulator.sfx, -1);
+                        Mix_PlayChannel(1, emulator.sfx, 0);
                     }
                     emulator.cpu->decrement_sound();
                 }
@@ -99,7 +98,8 @@ int main(int argc, char** args) {
             }
         }
         else {
-            // GAME SELECTION        
+            // GAME SELECTION
+
             emulator.list_games();
         }
     }
