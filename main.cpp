@@ -75,8 +75,14 @@ int main(int argc, char** args) {
                 }
 
                 if (emulator.cpu->get_sound() > 0) {
-                    //emulator.sound->play();
+                    std::cout << emulator.cpu->get_sound() << std::endl;
+                    if (!Mix_Playing(1)) {
+                        Mix_PlayChannel(1, emulator.sfx, -1);
+                    }
                     emulator.cpu->decrement_sound();
+                }
+                else {
+                    Mix_HaltChannel(1);
                 }
 
                 emulator.instructions_ran = 0;

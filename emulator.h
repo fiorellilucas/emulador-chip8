@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <SDL.h>
 #include <SDL_ttf.h>
+#include <SDL_mixer.h>
 
 class Emulator {
 public:
@@ -14,6 +15,7 @@ public:
     std::unique_ptr<GPU> gpu;
     SDL_Window* window;
     SDL_Renderer* renderer;
+    Mix_Chunk* sfx;
 
     bool game_is_loaded = false;
     bool running = true;

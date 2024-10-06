@@ -30,6 +30,18 @@ Emulator::Emulator() {
         std::cout << TTF_GetError() << std::endl;
     }
 
+    int result = Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024);
+    if (result != 0) {
+        std::cout << Mix_GetError() << std::endl;
+    }
+
+    sfx = Mix_LoadWAV("./assets/beep-1200.wav");
+    if (!sfx) {
+        std::cout << Mix_GetError() << std::endl;
+    }
+
+    Mix_VolumeChunk(sfx, 30);
+
     // fills the game_entries_ vector with all the roms (std::filesystem::directory_entry's)
     if (!std::filesystem::is_empty(games_path_)) {
         for (auto const& rom : std::filesystem::directory_iterator{ games_path_ })
