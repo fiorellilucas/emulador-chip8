@@ -5,6 +5,7 @@
 #include "emulator.h"
 
 constexpr uint16_t INSTRUCTIONS_PER_FRAME = 11;
+constexpr double TARGET_FRAME_TIME = 16.6667;
 
 int main(int argc, char** args) {
     Emulator emulator;
@@ -55,7 +56,6 @@ int main(int argc, char** args) {
         if (emulator.game_is_loaded) {
             // EMULATION CYCLE
             
-
             uint16_t key_pressed = emulator.decode_key_pressed();
             emulator.cpu->fetch_opcode(*emulator.mem);
 
@@ -84,8 +84,11 @@ int main(int argc, char** args) {
 
                 Uint64 end = SDL_GetPerformanceCounter();
                 double elapsed_time = (double)(end - start) / (double)SDL_GetPerformanceFrequency() * 1000.0f;
-                if ((16.6666f - elapsed_time) > 0) {
-                    SDL_Delay(static_cast<Uint32>(16.6666f - elapsed_time));
+
+                double remaining_frame_time = TARGET_FRAME_TIME - elapsed_time;                
+
+                if (remaining_frame_time > 0) {
+                    SDL_Delay(static_cast<Uint32>(remaining_frame_time));
                 }
             }
         }
