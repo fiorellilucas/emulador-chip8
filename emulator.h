@@ -28,7 +28,6 @@ public:
     void quit_game();
     void reload_game();
     void reset_system();
-    //void error_message(std::runtime_error exception);
     std::filesystem::directory_entry game_selected();
 
 private:

@@ -63,7 +63,8 @@ int main(int argc, char** args) {
                 emulator.cpu->decode_execute_opcode(*emulator.mem, *emulator.gpu, emulator.renderer, key_pressed);
             }
             catch (std::runtime_error exception) {
-                //emulator.error_message(exception);
+                std::cout << exception.what() << std::endl;
+                emulator.quit_game();
             }
 
             emulator.gpu->render_frame_buffer(emulator.renderer);
