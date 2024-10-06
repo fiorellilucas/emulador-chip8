@@ -20,6 +20,7 @@ int main(int argc, char** args) {
                 SDL_DestroyWindow(emulator.window);
                 SDL_Quit();
                 emulator.running = false;
+                return 0;
                 break;
 
             case SDL_KEYUP:
