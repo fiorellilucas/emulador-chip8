@@ -1,12 +1,12 @@
-//#include "memory.h"
-//#include "cpu.h"
-//#include "gpu.h"
+#include "memory.h"
+#include "cpu.h"
+#include "gpu.h"
 #include "emulator.h"
 
 Emulator::Emulator() {
-    //cpu = std::make_unique<CPU>();
-    //mem = std::make_unique<Memory>();
-    //gpu = std::make_unique<GPU>();
+    cpu = std::make_unique<CPU>();
+    mem = std::make_unique<Memory>();
+    gpu = std::make_unique<GPU>();
 
     SDL_Init(SDL_INIT_EVERYTHING);
     window = SDL_CreateWindow("Chip-8 emulator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 640, SDL_WINDOW_SHOWN);
@@ -43,59 +43,58 @@ Emulator::Emulator() {
 
 Emulator::~Emulator() {}
 
-uint16_t Emulator::decode_key_pressed(SDL_Event event) {
-    switch (event.key.keysym.sym) {
-    case SDLK_0:
+uint16_t Emulator::decode_key_pressed() {
+    const uint8_t* state =  SDL_GetKeyboardState(NULL);
+    if (state[SDL_SCANCODE_0]) {
         return 0x0;
-        break;
-    case SDLK_1:
+    }
+    else if (state[SDL_SCANCODE_1]) {
         return 0x1;
-        break;
-    case SDLK_2:
+    }
+    else if (state[SDL_SCANCODE_2]) {
         return 0x2;
-        break;
-    case SDLK_3:
+    }
+    else if (state[SDL_SCANCODE_3]) {
         return 0x3;
-        break;
-    case SDLK_4:
+    }
+    else if (state[SDL_SCANCODE_4]) {
         return 0x4;
-        break;
-    case SDLK_5:
+    }
+    else if (state[SDL_SCANCODE_5]) {
         return 0x5;
-        break;
-    case SDLK_6:
+    }
+    else if (state[SDL_SCANCODE_6]) {
         return 0x6;
-        break;
-    case SDLK_7:
+    }
+    else if (state[SDL_SCANCODE_7]) {
         return 0x7;
-        break;
-    case SDLK_8:
+    }
+    else if (state[SDL_SCANCODE_8]) {
         return 0x8;
-        break;
-    case SDLK_9:
+    }
+    else if (state[SDL_SCANCODE_9]) {
         return 0x9;
-        break;
-    case SDLK_a:
+    }
+    else if (state[SDL_SCANCODE_A]) {
         return 0xA;
-        break;
-    case SDLK_b:
+    }
+    else if (state[SDL_SCANCODE_B]) {
         return 0xB;
-        break;
-    case SDLK_c:
+    }
+    else if (state[SDL_SCANCODE_C]) {
         return 0xC;
-        break;
-    case SDLK_d:
+    }
+    else if (state[SDL_SCANCODE_D]) {
         return 0xD;
-        break;
-    case SDLK_e:
+    }
+    else if (state[SDL_SCANCODE_E]) {
         return 0xE;
-        break;
-    case SDLK_f:
+    }
+    else if (state[SDL_SCANCODE_F]) {
         return 0xF;
-        break;
-    default:
+    }
+    else {
         return NULL;
-        break;
     }
 }
 
@@ -169,6 +168,7 @@ void Emulator::draw_controls_legend_() {
 }
 
 void Emulator::list_games() {
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
 
     draw_logo_();
@@ -237,21 +237,21 @@ std::filesystem::directory_entry Emulator::game_selected() {
     return games_entries_[cursor_position];
 }
 
-//void Emulator::quit_game() {
-//    reset_system();
-//    game_is_loaded = false;
-//}
+void Emulator::quit_game() {
+    reset_system();
+    game_is_loaded = false;
+}
 
-//void Emulator::reload_game() {
-//    quit_game();
-//    game_is_loaded = mem->load_game(game_selected());
-//}
+void Emulator::reload_game() {
+    quit_game();
+    game_is_loaded = mem->load_game(game_selected());
+}
 
-//void Emulator::reset_system() {
-//    cpu = std::make_unique<CPU>();
-//    mem = std::make_unique<Memory>();
-//    gpu = std::make_unique<GPU>();
-//}
+void Emulator::reset_system() {
+    cpu = std::make_unique<CPU>();
+    mem = std::make_unique<Memory>();
+    gpu = std::make_unique<GPU>();
+}
 
 //void Emulator::error_message(std::runtime_error exception) {
 //    sf::RenderWindow err_window(sf::VideoMode(320, 150), "Runtime error");

@@ -34,13 +34,13 @@ void CPU::fetch_opcode(Memory& mem) {
     set_opcode_(mem.memory[pc] << 8 | mem.memory[pc + 1]);
 }
 
-void CPU::op_00E0(GPU& gpu) {
-    for (uint16_t pixel_pos_y = 0; pixel_pos_y < 32; pixel_pos_y++) {
-        for (uint16_t pixel_pos_x = 0; pixel_pos_x < 64; pixel_pos_x++) {
-            gpu.frame_buffer[pixel_pos_y][pixel_pos_x] = 0;
-        }
-    }
-}
+//void CPU::op_00E0(GPU& gpu) {
+//    for (uint16_t pixel_pos_y = 0; pixel_pos_y < 32; pixel_pos_y++) {
+//        for (uint16_t pixel_pos_x = 0; pixel_pos_x < 64; pixel_pos_x++) {
+//            gpu.frame_buffer[pixel_pos_y][pixel_pos_x] = 0;
+//        }
+//    }
+//}
 
 void CPU::op_00EE() {
     pc = stack_.top();
@@ -212,20 +212,20 @@ void CPU::op_Fx07(uint16_t reg_num) {
     gp_regs_[reg_num] = delay_reg_;
 }
 
-void CPU::op_Fx0A(uint16_t reg_num, uint16_t& key_pressed, sf::RenderWindow& window) {
-    sf::Event event;
-    while (window.waitEvent(event)) {
-        if (event.type == sf::Event::Closed) {
-            window.close();
-        }
-        if (event.type == sf::Event::KeyPressed) {
-            gp_regs_[reg_num] = key_pressed;
-        }
-        else if (event.type == sf::Event::KeyReleased) {
-            break;
-        }
-    }
-}
+//void CPU::op_Fx0A(uint16_t reg_num, uint16_t& key_pressed, sf::RenderWindow& window) {
+//    sf::Event event;
+//    while (window.waitEvent(event)) {
+//        if (event.type == sf::Event::Closed) {
+//            window.close();
+//        }
+//        if (event.type == sf::Event::KeyPressed) {
+//            gp_regs_[reg_num] = key_pressed;
+//        }
+//        else if (event.type == sf::Event::KeyReleased) {
+//            break;
+//        }
+//    }
+//}
 
 void CPU::op_Fx15(uint16_t reg_num) {
     delay_reg_ = gp_regs_[reg_num];
@@ -263,7 +263,7 @@ void CPU::op_Fx65(uint16_t reg_num, Memory& mem) {
     index_reg_ += reg_num + 1;
 }
 
-void CPU::decode_execute_opcode(Memory& mem, GPU& gpu, sf::RenderWindow& window, uint16_t& key_pressed) {
+void CPU::decode_execute_opcode(Memory& mem, GPU& gpu, SDL_Renderer* renderer, uint16_t& key_pressed) {
     increment_pc_flag_ = true;
     uint16_t opcode_data = (opcode_ & 0xFFF);
 
@@ -405,10 +405,10 @@ void CPU::decode_execute_opcode(Memory& mem, GPU& gpu, sf::RenderWindow& window,
             op_Fx07(reg_num);
             break;
         }
-        case 0x0A: {
-            op_Fx0A(reg_num, key_pressed, window);
-            break;
-        }
+        //case 0x0A: {
+        //    op_Fx0A(reg_num, key_pressed, window);
+        //    break;
+        //}
         case 0x15: {
             op_Fx15(reg_num);
             break;
@@ -450,9 +450,9 @@ void CPU::decode_execute_opcode(Memory& mem, GPU& gpu, sf::RenderWindow& window,
         case 0xEE:
             op_00EE();
             break;
-        case 0xE0:
-            op_00E0(gpu);
-            break;
+        //case 0xE0:
+        //    op_00E0(gpu);
+        //    break;
         default:
             throw std::runtime_error("Unknown opcode: " + (std::stringstream{} << std::hex << std::showbase << opcode_).str());
             break;
