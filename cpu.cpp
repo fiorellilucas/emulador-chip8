@@ -212,20 +212,17 @@ void CPU::op_Fx07(uint16_t reg_num) {
     gp_regs_[reg_num] = delay_reg_;
 }
 
-//void CPU::op_Fx0A(uint16_t reg_num, uint16_t& key_pressed, sf::RenderWindow& window) {
-//    sf::Event event;
-//    while (window.waitEvent(event)) {
-//        if (event.type == sf::Event::Closed) {
-//            window.close();
-//        }
-//        if (event.type == sf::Event::KeyPressed) {
-//            gp_regs_[reg_num] = key_pressed;
-//        }
-//        else if (event.type == sf::Event::KeyReleased) {
-//            break;
-//        }
-//    }
-//}
+void CPU::op_Fx0A(uint16_t reg_num, uint16_t& key_pressed) {
+    SDL_Event event;
+    while (SDL_WaitEvent(&event)) {
+        if (event.type == SDL_KEYUP) {
+            break;
+        }
+        else if (event.type == SDL_KEYDOWN) {
+            gp_regs_[reg_num] = key_pressed;
+        }
+    }
+}
 
 void CPU::op_Fx15(uint16_t reg_num) {
     delay_reg_ = gp_regs_[reg_num];
@@ -405,10 +402,10 @@ void CPU::decode_execute_opcode(Memory& mem, GPU& gpu, SDL_Renderer* renderer, u
             op_Fx07(reg_num);
             break;
         }
-        //case 0x0A: {
-        //    op_Fx0A(reg_num, key_pressed, window);
-        //    break;
-        //}
+        case 0x0A: {
+            op_Fx0A(reg_num, key_pressed);
+            break;
+        }
         case 0x15: {
             op_Fx15(reg_num);
             break;

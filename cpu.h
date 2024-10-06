@@ -61,7 +61,7 @@ private:
     void op_Ex9E(uint16_t reg_num, uint16_t& key_pressed);
     void op_ExA1(uint16_t reg_num, uint16_t& key_pressed);
     void op_Fx07(uint16_t reg_num);
-    //void op_Fx0A(uint16_t reg_num, uint16_t& key_pressed, sf::RenderWindow& window);
+    void op_Fx0A(uint16_t reg_num, uint16_t& key_pressed);
     void op_Fx15(uint16_t reg_num);
     void op_Fx18(uint16_t reg_num);
     void op_Fx1E(uint16_t reg_num);
