@@ -34,13 +34,13 @@ void CPU::fetch_opcode(Memory& mem) {
     set_opcode_(mem.memory[pc] << 8 | mem.memory[pc + 1]);
 }
 
-//void CPU::op_00E0(GPU& gpu) {
-//    for (uint16_t pixel_pos_y = 0; pixel_pos_y < 32; pixel_pos_y++) {
-//        for (uint16_t pixel_pos_x = 0; pixel_pos_x < 64; pixel_pos_x++) {
-//            gpu.frame_buffer[pixel_pos_y][pixel_pos_x] = 0;
-//        }
-//    }
-//}
+void CPU::op_00E0(GPU& gpu) {
+    for (uint16_t pixel_pos_y = 0; pixel_pos_y < 32; pixel_pos_y++) {
+        for (uint16_t pixel_pos_x = 0; pixel_pos_x < 64; pixel_pos_x++) {
+            gpu.frame_buffer[pixel_pos_y][pixel_pos_x] = 0;
+        }
+    }
+}
 
 void CPU::op_00EE() {
     pc = stack_.top();
@@ -450,9 +450,9 @@ void CPU::decode_execute_opcode(Memory& mem, GPU& gpu, SDL_Renderer* renderer, u
         case 0xEE:
             op_00EE();
             break;
-        //case 0xE0:
-        //    op_00E0(gpu);
-        //    break;
+        case 0xE0:
+            op_00E0(gpu);
+            break;
         default:
             throw std::runtime_error("Unknown opcode: " + (std::stringstream{} << std::hex << std::showbase << opcode_).str());
             break;

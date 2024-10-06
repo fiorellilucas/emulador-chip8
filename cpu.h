@@ -35,7 +35,7 @@ private:
     void increment_pc_();
     void set_opcode_(uint16_t opcode);
 
-    //void op_00E0(GPU& gpu);
+    void op_00E0(GPU& gpu);
     void op_00EE();
     void op_1nnn(uint16_t opcode_data);
     void op_2nnn(uint16_t opcode_data);
