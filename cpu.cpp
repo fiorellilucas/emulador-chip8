@@ -229,7 +229,12 @@ void CPU::op_Fx15(uint16_t reg_num) {
 }
 
 void CPU::op_Fx18(uint16_t reg_num) {
-    sound_reg_ = gp_regs_[reg_num];
+    if (gp_regs_[reg_num] <= 1) {
+        sound_reg_ = 2;
+    }
+    else {
+        sound_reg_ = gp_regs_[reg_num];
+    }
 }
 
 void CPU::op_Fx1E(uint16_t reg_num) {
