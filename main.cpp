@@ -32,6 +32,9 @@ int main(int argc, char** args) {
                 case SDLK_r:
                     emulator.reload_game();
                     break;
+                case SDLK_RETURN:
+                    emulator.game_is_loaded = emulator.mem->load_game(emulator.game_selected());
+                    break;
                 default:
                     break;
                 }
@@ -44,9 +47,6 @@ int main(int argc, char** args) {
                     break;
                 case SDLK_s:
                     emulator.cursor_position < (emulator.num_games_installed() - 1) ? emulator.cursor_position += 1 : NULL;
-                    break;
-                case SDLK_RETURN:
-                    emulator.game_is_loaded = emulator.mem->load_game(emulator.game_selected());
                     break;
                 default:
                     break;
