@@ -7,11 +7,19 @@
 constexpr uint16_t INSTRUCTIONS_PER_FRAME = 11;
 constexpr double TARGET_FRAME_TIME = 16.6667;
 
-int main(int argc, char** args) {
-    Emulator emulator;
+Emulator emulator;
 
-    while (emulator.running) {
-        Uint64 start = SDL_GetPerformanceCounter();
+void mainloop();
+
+int main(int argc, char** args) {
+    emscripten_set_main_loop(mainloop, 0, 1);
+
+    return 0;
+}
+
+void mainloop() {
+    if (emulator.running) {
+        // Uint64 start = SDL_GetPerformanceCounter();
 
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -21,7 +29,6 @@ int main(int argc, char** args) {
                 SDL_DestroyWindow(emulator.window);
                 SDL_Quit();
                 emulator.running = false;
-                return 0;
                 break;
 
             case SDL_KEYUP:
@@ -63,7 +70,7 @@ int main(int argc, char** args) {
                 emulator.cpu->decode_execute_opcode(*emulator.mem, *emulator.gpu, emulator.renderer, key_pressed);
             }
             catch (std::runtime_error exception) {
-                std::cout << exception.what() << std::endl;
+                // std::cout << exception.what() << std::endl;
                 emulator.quit_game();
             }
 
@@ -88,14 +95,14 @@ int main(int argc, char** args) {
                 emulator.instructions_ran = 0;
                 SDL_RenderPresent(emulator.renderer);
 
-                Uint64 end = SDL_GetPerformanceCounter();
-                double elapsed_time = (double)(end - start) / (double)SDL_GetPerformanceFrequency() * 1000.0f;
+                // Uint64 end = SDL_GetPerformanceCounter();
+                // double elapsed_time = (double)(end - start) / (double)SDL_GetPerformanceFrequency() * 1000.0f;
 
-                double remaining_frame_time = TARGET_FRAME_TIME - elapsed_time;                
+                // double remaining_frame_time = TARGET_FRAME_TIME - elapsed_time;                
 
-                if (remaining_frame_time > 0) {
-                    SDL_Delay(static_cast<Uint32>(remaining_frame_time));
-                }
+                // if (remaining_frame_time > 0) {
+                //     SDL_Delay(static_cast<Uint32>(remaining_frame_time));
+                // }
             }
         }
         else {
@@ -104,5 +111,4 @@ int main(int argc, char** args) {
             emulator.list_games();
         }
     }
-    return 0;
 }

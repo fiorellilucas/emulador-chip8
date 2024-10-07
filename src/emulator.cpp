@@ -20,12 +20,12 @@ Emulator::Emulator() {
         std::cout << TTF_GetError() << std::endl;
     }
 
-    font_ = TTF_OpenFont("./assets/font.ttf", 60);
+    font_ = TTF_OpenFont("assets/font.ttf", 60);
     if (!font_) {
         std::cout << TTF_GetError() << std::endl;
     }
 
-    keycap_font_ = TTF_OpenFont("./assets/glyphs.otf", 60);
+    keycap_font_ = TTF_OpenFont("assets/glyphs.otf", 60);
     if (!keycap_font_) {
         std::cout << TTF_GetError() << std::endl;
     }
@@ -35,7 +35,7 @@ Emulator::Emulator() {
         std::cout << Mix_GetError() << std::endl;
     }
 
-    sfx = Mix_LoadWAV("./assets/beep-1200.wav");
+    sfx = Mix_LoadWAV("assets/beep-1200.wav");
     if (!sfx) {
         std::cout << Mix_GetError() << std::endl;
     }
@@ -191,9 +191,11 @@ void Emulator::list_games() {
     uint16_t line_pos_y = 110;
 
     SDL_Surface* game_name_surface;
+    SDL_Color white = SDL_Color{ 255, 255, 255 };
+    SDL_Color cyan = SDL_Color{ 0, 255, 255 };
 
     if (games_entries_.empty()) {
-        game_name_surface = TTF_RenderUTF8_Solid(font_, "No roms available", SDL_Color{ 255, 255, 255 });
+        game_name_surface = TTF_RenderUTF8_Solid(font_, "No roms available", white);
 
         SDL_Texture* game_name_texture = SDL_CreateTextureFromSurface(renderer, game_name_surface);
         if (!game_name_texture) {
@@ -218,10 +220,10 @@ void Emulator::list_games() {
         }
 
         if (i == cursor_position) {
-            game_name_surface = TTF_RenderUTF8_Solid(font_, games_entries_[i].path().stem().string().c_str(), SDL_Color(0, 255, 255));
+            game_name_surface = TTF_RenderUTF8_Solid(font_, games_entries_[i].path().stem().string().c_str(), cyan);
         }
         else {
-            game_name_surface = TTF_RenderUTF8_Solid(font_, games_entries_[i].path().stem().string().c_str(), SDL_Color(255, 255, 255));
+            game_name_surface = TTF_RenderUTF8_Solid(font_, games_entries_[i].path().stem().string().c_str(), white);
         }
         if (!game_name_surface) {
             std::cout << TTF_GetError() << std::endl;
