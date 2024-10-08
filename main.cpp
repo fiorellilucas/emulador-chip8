@@ -35,6 +35,9 @@ int main(int argc, char** args) {
                 case SDLK_RETURN:
                     emulator.game_is_loaded = emulator.mem->load_game(emulator.game_selected());
                     break;
+                case SDLK_p:
+                    emulator.game_paused = ~emulator.game_paused;
+                    break;
                 default:
                     break;
                 }
@@ -57,48 +60,50 @@ int main(int argc, char** args) {
             }
         }
         if (emulator.game_is_loaded) {
-            // EMULATION CYCLE
+            if (!emulator.game_paused) {
+                // EMULATION CYCLE
 
-            emulator.cpu->fetch_opcode(*emulator.mem);
+                emulator.cpu->fetch_opcode(*emulator.mem);
 
-            try {
-                emulator.cpu->decode_execute_opcode(*emulator.mem, *emulator.gpu, emulator.renderer, emulator.key_pressed);
-            }
-            catch (std::runtime_error exception) {
-                std::cout << exception.what() << std::endl;
-                emulator.quit_game();
-            }
-
-            emulator.instructions_ran += 1;
-            if (emulator.instructions_ran >= INSTRUCTIONS_PER_FRAME) {
-                emulator.instructions_ran = 0;
-
-                if (emulator.cpu->get_delay() > 0) {
-                    emulator.cpu->decrement_delay();
+                try {
+                    emulator.cpu->decode_execute_opcode(*emulator.mem, *emulator.gpu, emulator.renderer, emulator.key_pressed);
+                }
+                catch (std::runtime_error exception) {
+                    std::cout << exception.what() << std::endl;
+                    emulator.quit_game();
                 }
 
-                if (emulator.cpu->get_sound() > 0) {
-                    if (!Mix_Playing(1)) {
-                        if (!emulator.game_muted) {
-                            Mix_PlayChannel(1, emulator.sfx, 0);
-                        }
+                emulator.instructions_ran += 1;
+                if (emulator.instructions_ran >= INSTRUCTIONS_PER_FRAME) {
+                    emulator.instructions_ran = 0;
+
+                    if (emulator.cpu->get_delay() > 0) {
+                        emulator.cpu->decrement_delay();
                     }
-                    emulator.cpu->decrement_sound();
-                }
-                else {
-                    Mix_HaltChannel(1);
-                }
 
-                emulator.gpu->render_frame_buffer(emulator.renderer);
-                emulator.key_pressed = emulator.decode_key_pressed();
+                    if (emulator.cpu->get_sound() > 0) {
+                        if (!Mix_Playing(1)) {
+                            if (!emulator.game_muted) {
+                                Mix_PlayChannel(1, emulator.sfx, 0);
+                            }
+                        }
+                        emulator.cpu->decrement_sound();
+                    }
+                    else {
+                        Mix_HaltChannel(1);
+                    }
 
-                Uint64 end = SDL_GetPerformanceCounter();
-                double elapsed_time = (double)(end - start) / (double)SDL_GetPerformanceFrequency() * 1000.0f;
+                    emulator.gpu->render_frame_buffer(emulator.renderer);
+                    emulator.key_pressed = emulator.decode_key_pressed();
 
-                double remaining_frame_time = TARGET_FRAME_TIME - elapsed_time;                
+                    Uint64 end = SDL_GetPerformanceCounter();
+                    double elapsed_time = (double)(end - start) / (double)SDL_GetPerformanceFrequency() * 1000.0f;
 
-                if (remaining_frame_time > 0) {
-                    SDL_Delay(static_cast<Uint32>(remaining_frame_time));
+                    double remaining_frame_time = TARGET_FRAME_TIME - elapsed_time;
+
+                    if (remaining_frame_time > 0) {
+                        SDL_Delay(static_cast<Uint32>(remaining_frame_time));
+                    }
                 }
             }
         }

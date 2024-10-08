@@ -178,6 +178,7 @@ void Emulator::draw_controls_legend_() {
     draw_single_control_legend_("a", "SELECT GAME", 1000, 200);
     draw_single_control_legend_("m", "QUIT TO MENU", 1000, 260);
     draw_single_control_legend_("M", "MUTE", 1000, 320);
+    draw_single_control_legend_("P", "PAUSE", 1000, 380);
 }
 
 void Emulator::list_games() {
