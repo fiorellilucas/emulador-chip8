@@ -23,4 +23,5 @@ void GPU::render_frame_buffer(SDL_Renderer* renderer) {
             draw_pixel(frame_buffer[pixel_pos_y][pixel_pos_x], pixel_pos_x, pixel_pos_y, renderer);
         }
     }
+    SDL_RenderPresent(renderer);
 }

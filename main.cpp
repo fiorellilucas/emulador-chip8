@@ -55,22 +55,21 @@ int main(int argc, char** args) {
         }
         if (emulator.game_is_loaded) {
             // EMULATION CYCLE
-            
-            uint16_t key_pressed = emulator.decode_key_pressed();
+
             emulator.cpu->fetch_opcode(*emulator.mem);
 
             try {
-                emulator.cpu->decode_execute_opcode(*emulator.mem, *emulator.gpu, emulator.renderer, key_pressed);
+                emulator.cpu->decode_execute_opcode(*emulator.mem, *emulator.gpu, emulator.renderer, emulator.key_pressed);
             }
             catch (std::runtime_error exception) {
                 std::cout << exception.what() << std::endl;
                 emulator.quit_game();
             }
 
-            emulator.gpu->render_frame_buffer(emulator.renderer);
-
             emulator.instructions_ran += 1;
             if (emulator.instructions_ran >= INSTRUCTIONS_PER_FRAME) {
+                emulator.instructions_ran = 0;
+
                 if (emulator.cpu->get_delay() > 0) {
                     emulator.cpu->decrement_delay();
                 }
@@ -85,8 +84,8 @@ int main(int argc, char** args) {
                     Mix_HaltChannel(1);
                 }
 
-                emulator.instructions_ran = 0;
-                SDL_RenderPresent(emulator.renderer);
+                emulator.gpu->render_frame_buffer(emulator.renderer);
+                emulator.key_pressed = emulator.decode_key_pressed();
 
                 Uint64 end = SDL_GetPerformanceCounter();
                 double elapsed_time = (double)(end - start) / (double)SDL_GetPerformanceFrequency() * 1000.0f;

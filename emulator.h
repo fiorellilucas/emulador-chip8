@@ -21,6 +21,7 @@ public:
     bool running = true;
     uint16_t instructions_ran = 0;
     uint16_t cursor_position = 0;
+    uint16_t key_pressed = NULL;
 
     uint16_t decode_key_pressed();
     uint16_t num_games_installed();
