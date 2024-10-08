@@ -48,6 +48,9 @@ int main(int argc, char** args) {
                 case SDLK_s:
                     emulator.cursor_position < (emulator.num_games_installed() - 1) ? emulator.cursor_position += 1 : NULL;
                     break;
+                case SDLK_m:
+                    emulator.game_muted = ~emulator.game_muted;
+                    break;
                 default:
                     break;
                 }
@@ -76,7 +79,9 @@ int main(int argc, char** args) {
 
                 if (emulator.cpu->get_sound() > 0) {
                     if (!Mix_Playing(1)) {
-                        Mix_PlayChannel(1, emulator.sfx, 0);
+                        if (!emulator.game_muted) {
+                            Mix_PlayChannel(1, emulator.sfx, 0);
+                        }
                     }
                     emulator.cpu->decrement_sound();
                 }
