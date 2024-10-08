@@ -1,12 +1,12 @@
 # Emulador de Chip-8
-Um simples emulador da plataforma Chip8 feito em C++, utlizando a biblioteca SFML para gráficos, áudio e entradas.
+Um simples emulador da plataforma Chip8 feito em C++, utlizando a biblioteca SDL para gráficos, áudio e entradas.
 
 <div align="center">
   <img src="https://github.com/user-attachments/assets/9a3c2e85-c9e1-40ed-b949-d39f989ad295" alt="video-emulador-chip8" height="400">
 </div>
 
 ### Menu seletor de jogos
-Use **W/S** ou **UP/DOWN** para selecionar um jogo, e **ENTER** para confirmar.
+Use **W/S** para selecionar um jogo, e **ENTER** para confirmar.
 <div align="center">
   <img src="https://github.com/user-attachments/assets/55e66c4c-18c6-4849-bda1-dc7ee02b3e3c" alt="menu emulador" height="400">
 </div>
@@ -28,6 +28,6 @@ Os opcodes no Chip-8 são comandos de 2 bytes que instruem a máquina virtual so
 - *Pong*: use `1` e `4` para controlar sua barra.
 
 ## Para compilar
-1. Baixe SFML para Visual C++ 17 do [site oficial](https://www.sfml-dev.org/download/sfml/2.6.1/), extraia a pasta e coloque-a em `C:\`. O projeto espera que a pasta SFML fique na raiz do disco C, porém se você quiser colocá-la em outro lugar, altere as configurações do projeto seguindo o [tutorial no próprio site do SFML](https://www.sfml-dev.org/tutorials/2.6/start-vc.php);
-2. Clone o repositório e abra a solução no Visual Studio. Se quiser compilar em modo Debug (embora não vá ter a performance necessária para jogar) você precisará colocar as DLLs do SFML na raiz do projeto também, já que o projeto é dynamically linked em modo Debug. Em modo Release, o projeto é statically linked;
+1. Baixe SDL para Visual C++ (Visual Studio) do [site oficial](https://www.libsdl.org/), extraia a pasta e coloque-a em `C:\`. O projeto espera que a pasta SDL fique na raiz do disco C, porém se você quiser colocá-la em outro lugar, altere as configurações do projeto seguindo o [este tutorial](https://thenumb.at/cpp-course/sdl2/01/vsSetup.html);
+2. Clone o repositório e abra a solução no Visual Studio. Você também vai precisar de duas extensões do SDL: a SDL_TTF e a SDL_Mixer, para renderização de fontes e reprodução de áudio, respectivamente, além de suas respectivas DLLs. [Extensões disponíveis](https://thenumb.at/cpp-course/sdl2/06/06.html) e [tutorial para instalá-las](https://thenumb.at/cpp-course/sdl2/06/vsSetup.html);
 3. O emulador também espera que haja uma pasta `roms` na raiz do projeto, com todos os arquivos com extensão `.ch8`, que são os jogos. O repositório inclui algumas dessas roms na pasta `test-roms`, basta passá-las para a pasta `roms`.
